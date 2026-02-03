@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getAdminDashboard, getDistributorDashboard } = require('../controllers/dashboardController');
+const { getAdminDashboard, getDistributorDashboard, getAnalytics } = require('../controllers/dashboardController');
 const { authenticateToken, authorizeRole } = require('../middleware/auth');
 
 /**
@@ -16,5 +16,12 @@ router.get('/admin', authenticateToken, authorizeRole('admin'), getAdminDashboar
  * @access  Private (Distributor only)
  */
 router.get('/distributor', authenticateToken, authorizeRole('distributor'), getDistributorDashboard);
+
+/**
+ * @route   GET /api/dashboard/analytics
+ * @desc    Get detailed analytics
+ * @access  Private (Admin only)
+ */
+router.get('/analytics', authenticateToken, authorizeRole('admin'), getAnalytics);
 
 module.exports = router;

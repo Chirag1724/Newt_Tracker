@@ -71,6 +71,12 @@ export default function Navbar() {
                             </>
                         ) : (
                             <>
+                                <Link
+                                    href={user.role === 'admin' ? '/admin/dashboard' : '/distributor/dashboard'}
+                                    className="text-primary hover:text-primary/80 transition-smooth font-bold"
+                                >
+                                    Go to Dashboard
+                                </Link>
                                 <div className="flex items-center space-x-3 bg-white/50 border border-gray-100 px-4 py-2 rounded-2xl">
                                     <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
                                         {user.name?.charAt(0).toUpperCase()}
@@ -118,6 +124,13 @@ export default function Navbar() {
                             </>
                         ) : (
                             <>
+                                <Link
+                                    href={user.role === 'admin' ? '/admin/dashboard' : '/distributor/dashboard'}
+                                    className="block p-4 bg-primary text-white text-center rounded-2xl font-bold"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    Go to Dashboard
+                                </Link>
                                 <div className="flex items-center space-x-3 p-3 bg-white/50 rounded-2xl">
                                     <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold">
                                         {user.name?.charAt(0).toUpperCase()}

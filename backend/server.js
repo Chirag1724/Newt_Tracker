@@ -5,6 +5,9 @@ require('dotenv').config();
 // Import routes
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
+const meetingRoutes = require('./routes/meetings');
+const salesRoutes = require('./routes/sales');
+const samplesRoutes = require('./routes/samples');
 
 // Import database connection (this will test the connection)
 const db = require('./config/db');
@@ -40,6 +43,9 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/meetings', meetingRoutes);
+app.use('/api/sales', salesRoutes);
+app.use('/api/samples', samplesRoutes);
 
 // 404 handler for undefined routes
 app.use((req, res) => {

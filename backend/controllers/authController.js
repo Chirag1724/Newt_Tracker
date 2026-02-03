@@ -196,8 +196,32 @@ const getMe = async (req, res) => {
     }
 };
 
+/**
+ * Get all users (Admin only)
+ * GET /api/auth/users
+ */
+const getAllUsers = async (req, res) => {
+    try {
+        const result = await db.query(
+            'SELECT id, name, email, role, phone, state, district, created_at FROM users ORDER BY created_at DESC'
+        );
+
+        res.json({
+            success: true,
+            users: result.rows
+        });
+    } catch (error) {
+        console.error('GetAllUsers error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error fetching users.'
+        });
+    }
+};
+
 module.exports = {
     register,
     login,
-    getMe
+    getMe,
+    getAllUsers
 };
