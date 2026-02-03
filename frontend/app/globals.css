@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Public+Sans:wght@300;400;500;600;700&display=swap');
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: 'Public Sans', sans-serif;
+  background-color: #FFF8F0;
+  color: #1A1A1A;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Custom Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Smooth transitions */
+.transition-smooth {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(26, 26, 26, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Button Styles */
+.btn-primary {
+  @apply bg-primary hover:bg-primary/95 text-white;
+  @apply px-8 py-4 rounded-full font-semibold;
+  @apply transition-smooth transform hover:scale-105;
+  @apply shadow-xl hover:shadow-2xl active:scale-95;
+  @apply flex items-center justify-center gap-2;
+}
+
+.btn-secondary {
+  @apply bg-secondary hover:bg-secondary/95 text-white;
+  @apply px-8 py-4 rounded-full font-semibold;
+  @apply transition-smooth transform hover:scale-105;
+  @apply shadow-xl hover:shadow-2xl active:scale-95;
+  @apply flex items-center justify-center gap-2;
+}
+
+.btn-outline {
+  @apply border-2 border-primary/20 text-primary;
+  @apply hover:bg-primary hover:text-white;
+  @apply px-8 py-4 rounded-full font-semibold;
+  @apply transition-smooth flex items-center justify-center gap-2;
+}
+
+/* Card Styles */
+.card-premium {
+  @apply bg-white rounded-3xl p-8;
+  @apply transition-smooth border border-gray-100 hover:-translate-y-2;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+}
+
+.card-premium:hover {
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.1);
+}
+
+/* Utility Classes */
+.gradient-bg {
+  background: linear-gradient(135deg, #2D5016 0%, #1a3010 100%);
+}
+
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+}
+
+.section-padding {
+  @apply py-24 px-6 md:px-12 lg:px-24;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  @apply border-[3px] border-primary/10 border-t-primary;
+  @apply rounded-full w-10 h-10;
+  animation: spin 0.8s linear infinite;
+}
