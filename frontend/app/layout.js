@@ -2,6 +2,7 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ClientProviders from '@/components/ClientProviders'
+import PWAInstallBanner from '@/components/PWAInstallBanner'
 
 export const metadata = {
     title: 'Newt Tracker - Field Operations Tracking Made Simple',
@@ -39,6 +40,7 @@ export default function RootLayout({ children }) {
                         {children}
                     </main>
                     <Footer />
+                    <PWAInstallBanner />
                 </ClientProviders>
             </body>
         </html>
