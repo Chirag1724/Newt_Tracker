@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getCurrentUser, logout } from '@/lib/auth';
+import PWAInstallButton from './PWAInstallButton';
 
 export default function Navbar() {
     const [user, setUser] = useState(null);
@@ -113,6 +114,11 @@ export default function Navbar() {
                 {/* Mobile Menu */}
                 {isMenuOpen && mounted && (
                     <div className="md:hidden mt-4 glass p-6 rounded-3xl space-y-4 animate-fadeIn">
+                        {/* PWA Install Button for Mobile */}
+                        <div className="pb-2 border-b border-gray-100">
+                            <PWAInstallButton />
+                        </div>
+
                         {!user ? (
                             <>
                                 <Link href="/login" className="block text-gray-600 hover:text-primary py-2 font-medium">
