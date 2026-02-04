@@ -10,18 +10,25 @@ const salesRoutes = require('./routes/sales');
 const samplesRoutes = require('./routes/samples');
 
 // Import database connection (this will test the connection)
-const db = require('./config/db');
+require('./config/db');
 
 // Initialize Express app
 const app = express();
 
 // Middleware
-app.use(cors({
-    origin: process.env.NODE_ENV === 'production'
-        ? process.env.FRONTEND_URL
-        : 'http://localhost:3001',
-    credentials: true
-}));
+// Middleware
+app.use(require('helmet')());
+app.use(require('./config/cors') ? require('cors')(require('./config/cors')) : require('cors')());
+
+// Rate limiting
+const limiter = require('express-rate-limit')({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 100, // Limit each IP to 100 requests per windowMs
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+app.use(limiter);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -67,13 +74,16 @@ app.use((err, req, res, next) => {
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log('════════════════════════════════════════════════');
-    console.log(`🚀 Newt Tracker API Server`);
-    console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`🌐 Server running on port ${PORT}`);
-    console.log(`🔗 API URL: http://localhost:${PORT}`);
-    console.log('════════════════════════════════════════════════');
-});
+
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log('════════════════════════════════════════════════');
+        console.log(`🚀 Newt Tracker API Server`);
+        console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`🌐 Server running on port ${PORT}`);
+        console.log(`🔗 API URL: http://localhost:${PORT}`);
+        console.log('════════════════════════════════════════════════');
+    });
+}
 
 module.exports = app;
