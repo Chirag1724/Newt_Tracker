@@ -1,101 +1,65 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { Loader } from '@googlemaps/js-api-loader';
+import { useState, useRef, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+// Dynamically import Leaflet component with no SSR
+const OSMMap = dynamic(() => import('./OSMMap'), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-80 bg-gray-100 animate-pulse rounded-2xl flex items-center justify-center text-gray-400">
+            Map Loading...
+        </div>
+    )
+});
 
 export default function MapPicker({ onLocationSelect, initialLocation }) {
     const mapRef = useRef(null);
-    const [map, setMap] = useState(null);
-    const [marker, setMarker] = useState(null);
-    const [selectedLocation, setSelectedLocation] = useState(initialLocation || null);
-    const [loading, setLoading] = useState(true);
+    const [selectedLocation, setSelectedLocation] = useState(initialLocation ? {
+        latitude: initialLocation.lat,
+        longitude: initialLocation.lng,
+        address: initialLocation.address || ''
+    } : null);
+
+    // Convert initial format to Leaflet format {lat, lng}
+    const [mapPosition, setMapPosition] = useState(initialLocation || null);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const initMap = async () => {
-            try {
-                const loader = new Loader({
-                    apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-                    version: 'weekly',
-                    libraries: ['places', 'geometry']
-                });
-
-                await loader.load();
-
-                const defaultCenter = initialLocation || { lat: 18.5204, lng: 73.8567 }; // Pune
-
-                const mapInstance = new google.maps.Map(mapRef.current, {
-                    center: defaultCenter,
-                    zoom: 13,
-                    mapTypeControl: false,
-                    streetViewControl: false,
-                    fullscreenControl: false
-                });
-
-                const markerInstance = new google.maps.Marker({
-                    map: mapInstance,
-                    position: defaultCenter,
-                    draggable: true,
-                    animation: google.maps.Animation.DROP
-                });
-
-                // Click on map to set location
-                mapInstance.addListener('click', (e) => {
-                    const location = {
-                        lat: e.latLng.lat(),
-                        lng: e.latLng.lng()
-                    };
-                    markerInstance.setPosition(location);
-                    reverseGeocode(location);
-                });
-
-                // Drag marker to set location
-                markerInstance.addListener('dragend', (e) => {
-                    const location = {
-                        lat: e.latLng.lat(),
-                        lng: e.latLng.lng()
-                    };
-                    reverseGeocode(location);
-                });
-
-                setMap(mapInstance);
-                setMarker(markerInstance);
-                setLoading(false);
-
-                // If initial location provided, get address
-                if (initialLocation) {
-                    reverseGeocode(initialLocation);
-                }
-            } catch (err) {
-                console.error('Error loading Google Maps:', err);
-                setError('Failed to load map. Please check your API key.');
-                setLoading(false);
-            }
-        };
-
-        initMap();
-    }, []);
-
-    const reverseGeocode = async (location) => {
+    const reverseGeocode = async (lat, lng) => {
         try {
-            const geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ location }, (results, status) => {
-                if (status === 'OK' && results[0]) {
-                    const address = results[0].formatted_address;
-                    const locationData = {
-                        latitude: location.lat,
-                        longitude: location.lng,
-                        address
-                    };
-                    setSelectedLocation(locationData);
-                    if (onLocationSelect) {
-                        onLocationSelect(locationData);
-                    }
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+            const data = await response.json();
+
+            if (data && data.display_name) {
+                const locationData = {
+                    latitude: lat,
+                    longitude: lng,
+                    address: data.display_name
+                };
+                setSelectedLocation(locationData);
+                if (onLocationSelect) {
+                    onLocationSelect(locationData);
                 }
-            });
+            }
         } catch (err) {
             console.error('Geocoding error:', err);
+            // Fallback if network fails
+            const locationData = {
+                latitude: lat,
+                longitude: lng,
+                address: `${lat.toFixed(6)}, ${lng.toFixed(6)}`
+            };
+            setSelectedLocation(locationData);
+            if (onLocationSelect) {
+                onLocationSelect(locationData);
+            }
         }
+    };
+
+    const handleMapClick = (pos) => {
+        setMapPosition(pos);
+        reverseGeocode(pos.lat, pos.lng);
     };
 
     const getCurrentLocation = () => {
@@ -103,13 +67,12 @@ export default function MapPicker({ onLocationSelect, initialLocation }) {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const location = {
+                    const pos = {
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
                     };
-                    map.setCenter(location);
-                    marker.setPosition(location);
-                    reverseGeocode(location);
+                    setMapPosition(pos);
+                    reverseGeocode(pos.lat, pos.lng);
                     setLoading(false);
                 },
                 (error) => {
@@ -144,10 +107,13 @@ export default function MapPicker({ onLocationSelect, initialLocation }) {
                 </button>
             </div>
 
-            <div
-                ref={mapRef}
-                className="w-full h-80 rounded-2xl overflow-hidden border-2 border-gray-200 shadow-lg"
-            />
+            <div className="w-full h-80 rounded-2xl overflow-hidden border-2 border-gray-200 shadow-lg relative z-0">
+                <OSMMap
+                    initialLocation={mapPosition}
+                    onLocationSelect={handleMapClick}
+                    mapRef={mapRef}
+                />
+            </div>
 
             {error && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
