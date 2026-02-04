@@ -6,27 +6,22 @@ import api from '@/lib/api';
 import MapPicker from '@/components/MapPicker';
 import PhotoUpload from '@/components/PhotoUpload';
 import DashboardLayout from '@/components/DashboardLayout';
+import { toast } from '@/lib/toastUtils';
+import { ButtonLoader } from '@/components/LoadingSkeletons';
 
 export default function LogMeetingPage() {
     const router = useRouter();
     const [meetingType, setMeetingType] = useState('one-on-one');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(false);
 
     const [formData, setFormData] = useState({
-        // One-on-one fields
         person_name: '',
         category: 'Farmer',
         contact_number: '',
         business_potential: '',
-
-        // Group fields
         village_name: '',
         attendee_count: '',
         meeting_topic: '',
-
-        // Common fields
         latitude: null,
         longitude: null,
         location_address: '',
@@ -46,6 +41,7 @@ export default function LogMeetingPage() {
             longitude: locationData.longitude,
             location_address: locationData.address
         }));
+        toast.success('Location captured successfully');
     };
 
     const handlePhotosChange = (photos) => {
@@ -70,11 +66,10 @@ export default function LogMeetingPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null);
 
         const validationError = validate();
         if (validationError) {
-            setError(validationError);
+            toast.error(validationError);
             return;
         }
 
@@ -86,7 +81,6 @@ export default function LogMeetingPage() {
                 ...formData
             };
 
-            // Remove fields based on meeting type
             if (meetingType === 'one-on-one') {
                 delete payload.village_name;
                 delete payload.attendee_count;
@@ -100,13 +94,11 @@ export default function LogMeetingPage() {
 
             await api.post('/meetings', payload);
 
-            setSuccess(true);
-            setTimeout(() => {
-                router.push('/distributor/meetings');
-            }, 1500);
+            toast.success('Meeting logged successfully!');
+            router.push('/distributor/meetings');
         } catch (err) {
             console.error('Submit error:', err);
-            setError(err.response?.data?.message || 'Failed to log meeting');
+            toast.error(err.response?.data?.message || 'Failed to log meeting');
         } finally {
             setLoading(false);
         }
@@ -114,13 +106,12 @@ export default function LogMeetingPage() {
 
     return (
         <DashboardLayout role="distributor">
-            <div className="min-h-screen bg-background py-12">
-                <div className="max-w-4xl mx-auto px-6">
-                    {/* Header */}
+            <div className="min-h-screen bg-background py-12 px-6">
+                <div className="max-w-4xl mx-auto">
                     <div className="mb-8">
                         <button
                             onClick={() => router.back()}
-                            className="text-primary font-semibold mb-4 flex items-center space-x-2 hover:text-primary/80 transition-smooth"
+                            className="text-primary font-bold mb-4 flex items-center space-x-2 hover:translate-x-[-4px] transition-transform"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -128,53 +119,31 @@ export default function LogMeetingPage() {
                             <span>Back</span>
                         </button>
                         <h1 className="text-4xl font-bold text-dark mb-2">Log New Meeting</h1>
-                        <p className="text-gray-600">Record your field meeting details</p>
+                        <p className="text-gray-600 font-medium">Capture field visit details and location</p>
                     </div>
 
-                    {/* Success Message */}
-                    {success && (
-                        <div className="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-2xl flex items-center space-x-3">
-                            <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <div>
-                                <p className="font-semibold text-green-800">Meeting logged successfully!</p>
-                                <p className="text-sm text-green-600">Redirecting to meetings list...</p>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Error Message */}
-                    {error && (
-                        <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-2xl text-red-700">
-                            {error}
-                        </div>
-                    )}
-
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="card-premium space-y-6">
-                        {/* Meeting Type Selector */}
-                        <div>
-                            <label className="block text-sm font-semibold text-dark mb-3">
+                    <form onSubmit={handleSubmit} className="card-premium space-y-8">
+                        <div className="space-y-4">
+                            <label className="block text-sm font-bold text-dark uppercase tracking-wider">
                                 Meeting Type <span className="text-red-500">*</span>
                             </label>
                             <div className="grid grid-cols-2 gap-4">
                                 <button
                                     type="button"
                                     onClick={() => setMeetingType('one-on-one')}
-                                    className={`p-4 rounded-xl border-2 font-semibold transition-smooth ${meetingType === 'one-on-one'
-                                        ? 'border-primary bg-primary/10 text-primary'
-                                        : 'border-gray-200 hover:border-gray-300'
+                                    className={`p-6 rounded-2xl border-2 font-bold transition-all duration-300 ${meetingType === 'one-on-one'
+                                        ? 'border-primary bg-primary/10 text-primary shadow-lg scale-[1.02]'
+                                        : 'border-gray-100 bg-gray-50 text-gray-400 hover:border-gray-200'
                                         }`}
                                 >
-                                    One-on-One Meeting
+                                    One-on-One
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setMeetingType('group')}
-                                    className={`p-4 rounded-xl border-2 font-semibold transition-smooth ${meetingType === 'group'
-                                        ? 'border-secondary bg-secondary/10 text-secondary'
-                                        : 'border-gray-200 hover:border-gray-300'
+                                    className={`p-6 rounded-2xl border-2 font-bold transition-all duration-300 ${meetingType === 'group'
+                                        ? 'border-secondary bg-secondary/10 text-secondary shadow-lg scale-[1.02]'
+                                        : 'border-gray-100 bg-gray-50 text-gray-400 hover:border-gray-200'
                                         }`}
                                 >
                                     Group Meeting
@@ -182,169 +151,132 @@ export default function LogMeetingPage() {
                             </div>
                         </div>
 
-                        {/* Conditional Fields */}
-                        {meetingType === 'one-on-one' ? (
-                            <>
-                                {/* Person Name */}
-                                <div>
-                                    <label className="block text-sm font-semibold text-dark mb-2">
-                                        Person Name <span className="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="person_name"
-                                        value={formData.person_name}
-                                        onChange={handleInputChange}
-                                        className="input-field"
-                                        placeholder="Enter person's name"
-                                        required={meetingType === 'one-on-one'}
-                                    />
-                                </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {meetingType === 'one-on-one' ? (
+                                <>
+                                    <div>
+                                        <label className="block text-sm font-bold text-dark mb-2">Person Name *</label>
+                                        <input
+                                            type="text"
+                                            name="person_name"
+                                            value={formData.person_name}
+                                            onChange={handleInputChange}
+                                            className="input-field"
+                                            placeholder="Farmer's / Retailer's Name"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-dark mb-2">Category *</label>
+                                        <select
+                                            name="category"
+                                            value={formData.category}
+                                            onChange={handleInputChange}
+                                            className="input-field"
+                                        >
+                                            <option value="Farmer">Farmer</option>
+                                            <option value="Retailer">Retailer</option>
+                                            <option value="Distributor">Secondary Distributor</option>
+                                            <option value="Influencer">Influencer</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-dark mb-2">Contact Number *</label>
+                                        <input
+                                            type="tel"
+                                            name="contact_number"
+                                            value={formData.contact_number}
+                                            onChange={handleInputChange}
+                                            className="input-field"
+                                            placeholder="+91 XXXXX XXXXX"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-dark mb-2">Business Potential (₹)</label>
+                                        <input
+                                            type="number"
+                                            name="business_potential"
+                                            value={formData.business_potential}
+                                            onChange={handleInputChange}
+                                            className="input-field"
+                                            placeholder="Estimated value"
+                                        />
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div>
+                                        <label className="block text-sm font-bold text-dark mb-2">Village / Location Name *</label>
+                                        <input
+                                            type="text"
+                                            name="village_name"
+                                            value={formData.village_name}
+                                            onChange={handleInputChange}
+                                            className="input-field"
+                                            placeholder="Enter location"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-dark mb-2">Attendee Count *</label>
+                                        <input
+                                            type="number"
+                                            name="attendee_count"
+                                            value={formData.attendee_count}
+                                            onChange={handleInputChange}
+                                            className="input-field"
+                                            placeholder="No. of people"
+                                        />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <label className="block text-sm font-bold text-dark mb-2">Meeting Topic</label>
+                                        <input
+                                            type="text"
+                                            name="meeting_topic"
+                                            value={formData.meeting_topic}
+                                            onChange={handleInputChange}
+                                            className="input-field"
+                                            placeholder="What was discussed?"
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
 
-                                {/* Category */}
-                                <div>
-                                    <label className="block text-sm font-semibold text-dark mb-2">
-                                        Category <span className="text-red-500">*</span>
-                                    </label>
-                                    <select
-                                        name="category"
-                                        value={formData.category}
-                                        onChange={handleInputChange}
-                                        className="input-field"
-                                    >
-                                        <option value="Farmer">Farmer</option>
-                                        <option value="Seller">Seller</option>
-                                        <option value="Influencer">Influencer</option>
-                                    </select>
-                                </div>
+                        <div className="space-y-6">
+                            <label className="block text-sm font-bold text-dark uppercase tracking-wider">Location Details *</label>
+                            <MapPicker onLocationSelect={handleLocationSelect} />
+                        </div>
 
-                                {/* Contact Number */}
-                                <div>
-                                    <label className="block text-sm font-semibold text-dark mb-2">
-                                        Contact Number <span className="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="tel"
-                                        name="contact_number"
-                                        value={formData.contact_number}
-                                        onChange={handleInputChange}
-                                        className="input-field"
-                                        placeholder="+91 98765 43210"
-                                        required={meetingType === 'one-on-one'}
-                                    />
-                                </div>
+                        <div className="space-y-6">
+                            <label className="block text-sm font-bold text-dark uppercase tracking-wider">Photo Proofs</label>
+                            <PhotoUpload onPhotosChange={handlePhotosChange} maxPhotos={5} />
+                        </div>
 
-                                {/* Business Potential */}
-                                <div>
-                                    <label className="block text-sm font-semibold text-dark mb-2">
-                                        Business Potential (₹)
-                                    </label>
-                                    <input
-                                        type="number"
-                                        name="business_potential"
-                                        value={formData.business_potential}
-                                        onChange={handleInputChange}
-                                        className="input-field"
-                                        placeholder="50000"
-                                    />
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                {/* Village Name */}
-                                <div>
-                                    <label className="block text-sm font-semibold text-dark mb-2">
-                                        Village Name <span className="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="village_name"
-                                        value={formData.village_name}
-                                        onChange={handleInputChange}
-                                        className="input-field"
-                                        placeholder="Enter village name"
-                                        required={meetingType === 'group'}
-                                    />
-                                </div>
-
-                                {/* Attendee Count */}
-                                <div>
-                                    <label className="block text-sm font-semibold text-dark mb-2">
-                                        Number of Attendees <span className="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="number"
-                                        name="attendee_count"
-                                        value={formData.attendee_count}
-                                        onChange={handleInputChange}
-                                        className="input-field"
-                                        placeholder="25"
-                                        min="1"
-                                        required={meetingType === 'group'}
-                                    />
-                                </div>
-
-                                {/* Meeting Topic */}
-                                <div>
-                                    <label className="block text-sm font-semibold text-dark mb-2">
-                                        Meeting Topic
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="meeting_topic"
-                                        value={formData.meeting_topic}
-                                        onChange={handleInputChange}
-                                        className="input-field"
-                                        placeholder="e.g., Crop protection techniques"
-                                    />
-                                </div>
-                            </>
-                        )}
-
-                        {/* Location Picker */}
-                        <MapPicker onLocationSelect={handleLocationSelect} />
-
-                        {/* Photo Upload */}
-                        <PhotoUpload onPhotosChange={handlePhotosChange} maxPhotos={5} />
-
-                        {/* Notes */}
                         <div>
-                            <label className="block text-sm font-semibold text-dark mb-2">
-                                Notes
-                            </label>
+                            <label className="block text-sm font-bold text-dark mb-2">Meeting Notes</label>
                             <textarea
                                 name="notes"
                                 value={formData.notes}
                                 onChange={handleInputChange}
-                                className="input-field"
-                                rows="4"
-                                placeholder="Add any additional notes about the meeting..."
+                                className="input-field min-h-[120px]"
+                                placeholder="Any additional observations..."
                             />
                         </div>
 
-                        {/* Submit Button */}
-                        <div className="flex space-x-4">
+                        <div className="flex gap-4 pt-4">
                             <button
                                 type="button"
                                 onClick={() => router.back()}
-                                className="btn-outline flex-1"
+                                className="btn-soft flex-1"
                                 disabled={loading}
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="btn-primary flex-1"
+                                className="btn-primary flex-1 py-4"
                                 disabled={loading}
                             >
-                                {loading ? (
-                                    <span className="flex items-center justify-center space-x-2">
-                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                                        <span>Logging Meeting...</span>
-                                    </span>
-                                ) : (
-                                    'Log Meeting'
-                                )}
+                                {loading ? <ButtonLoader /> : 'Record Meeting'}
                             </button>
                         </div>
                     </form>

@@ -1,0 +1,23 @@
+{
+    "name": "Newt Tracker",
+    "short_name": "Newt",
+    "description": "Field force tracking and sales management for rural distributors.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#2D5016",
+    "theme_color": "#2D5016",
+    "icons": [
+        {
+            "src": "/web-app-manifest-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/web-app-manifest-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "orientation": "portrait"
+}

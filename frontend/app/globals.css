@@ -138,7 +138,51 @@ h6 {
   box-shadow: 0 20px 80px rgba(0, 0, 0, 0.1);
 }
 
+@keyframes scaleUp {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* Input Styles */
+.input-field {
+  @apply w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-transparent;
+  @apply focus:border-primary/20 focus:bg-white outline-none;
+  @apply transition-smooth text-dark font-medium;
+}
+
+.input-field::placeholder {
+  @apply text-gray-400 font-normal;
+}
+
 /* Utility Classes */
+.btn-soft {
+  @apply px-4 py-2 rounded-xl bg-gray-100 text-gray-600 font-semibold;
+  @apply hover:bg-gray-200 transition-smooth active:scale-95;
+}
 .gradient-bg {
   background: linear-gradient(135deg, #2D5016 0%, #1a3010 100%);
 }

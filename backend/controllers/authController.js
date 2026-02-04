@@ -219,9 +219,120 @@ const getAllUsers = async (req, res) => {
     }
 };
 
+/**
+ * Update user profile
+ * PUT /api/auth/profile
+ */
+const updateProfile = async (req, res) => {
+    try {
+        const { name, phone, state, district } = req.body;
+        const userId = req.user.id;
+
+        const result = await db.query(
+            `UPDATE users 
+             SET name = $1, phone = $2, state = $3, district = $4, updated_at = CURRENT_TIMESTAMP
+             WHERE id = $5
+             RETURNING id, name, email, role, phone, state, district`,
+            [name, phone, state, district, userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found.'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Profile updated successfully',
+            user: result.rows[0]
+        });
+    } catch (error) {
+        console.error('UpdateProfile error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error updating profile.'
+        });
+    }
+};
+
+/**
+ * Change user password
+ * POST /api/auth/change-password
+ */
+const changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.user.id;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide current and new password.'
+            });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: 'New password must be at least 6 characters long.'
+            });
+        }
+
+        // Get current user password
+        const result = await db.query(
+            'SELECT password FROM users WHERE id = $1',
+            [userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found.'
+            });
+        }
+
+        const user = result.rows[0];
+
+        // Verify current password
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+        if (!isMatch) {
+            return res.status(401).json({
+                success: false,
+                message: 'Current password is incorrect.'
+            });
+        }
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update password
+        await db.query(
+            'UPDATE users SET password = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
+            [hashedPassword, userId]
+        );
+
+        res.json({
+            success: true,
+            message: 'Password changed successfully'
+        });
+    } catch (error) {
+        console.error('ChangePassword error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error changing password.'
+        });
+    }
+};
+
 module.exports = {
     register,
     login,
     getMe,
-    getAllUsers
+    getAllUsers,
+    updateProfile,
+    changePassword
 };

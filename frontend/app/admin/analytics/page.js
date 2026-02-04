@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import api from '@/lib/api';
 import DashboardLayout from '@/components/DashboardLayout';
 import {
@@ -9,6 +9,73 @@ import {
 } from 'recharts';
 
 const COLORS = ['#2E7D32', '#1565C0', '#f39c12', '#d35400', '#8e44ad', '#2c3e50', '#27ae60', '#2980b9'];
+
+// Memoized Charts
+const ProductBarChart = memo(({ data }) => (
+    <div className="card-premium">
+        <h3 className="text-xl font-bold text-dark mb-6">Product Performance (Revenue)</h3>
+        <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={data}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                    <XAxis dataKey="product_sku" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value / 1000}k`} />
+                    <Tooltip
+                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                        formatter={(value) => [`₹${parseFloat(value).toLocaleString('en-IN')}`, 'Revenue']}
+                    />
+                    <Bar dataKey="total_revenue" radius={[6, 6, 0, 0]}>
+                        {data?.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                    </Bar>
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
+    </div>
+));
+
+const EngagementPieChart = memo(({ data }) => (
+    <div className="card-premium">
+        <h3 className="text-xl font-bold text-dark mb-6">Engagement by Category</h3>
+        <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                    <Pie
+                        data={data?.map(item => ({
+                            ...item,
+                            count: Number(item.count) || 0
+                        }))}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={100}
+                        paddingAngle={8}
+                        dataKey="count"
+                        nameKey="category"
+                    >
+                        {(data || []).map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} strokeWidth={0} />
+                        ))}
+                    </Pie>
+                    <Tooltip
+                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                        formatter={(value) => [`${value} Meetings`, 'Count']}
+                    />
+                    <Legend
+                        verticalAlign="bottom"
+                        height={36}
+                        iconType="circle"
+                        formatter={(value) => <span className="text-gray-600 font-medium">{value}</span>}
+                    />
+                </PieChart>
+            </ResponsiveContainer>
+        </div>
+    </div>
+));
+
+ProductBarChart.displayName = 'ProductBarChart';
+EngagementPieChart.displayName = 'EngagementPieChart';
 
 export default function AdminAnalyticsPage() {
     const [data, setData] = useState(null);
@@ -84,57 +151,8 @@ export default function AdminAnalyticsPage() {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {/* Product Performance Bar Chart */}
-                        <div className="card-premium">
-                            <h3 className="text-xl font-bold text-dark mb-6">Product Performance (Revenue)</h3>
-                            <div className="h-80">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={product_performance}>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                                        <XAxis dataKey="product_sku" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-                                        <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value / 1000}k`} />
-                                        <Tooltip
-                                            contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-                                            formatter={(value) => [`₹${parseFloat(value).toLocaleString('en-IN')}`, 'Revenue']}
-                                        />
-                                        <Bar dataKey="total_revenue" radius={[6, 6, 0, 0]}>
-                                            {product_performance?.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Bar>
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
-
-                        {/* Meeting Categories Pie Chart */}
-                        <div className="card-premium">
-                            <h3 className="text-xl font-bold text-dark mb-6">Engagement by Category</h3>
-                            <div className="h-80">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={meeting_categories}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={60}
-                                            outerRadius={100}
-                                            paddingAngle={8}
-                                            dataKey="count"
-                                            nameKey="category"
-                                        >
-                                            {meeting_categories?.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} strokeWidth={0} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip
-                                            contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-                                        />
-                                        <Legend verticalAlign="bottom" height={36} />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
+                        <ProductBarChart data={product_performance} />
+                        <EngagementPieChart data={meeting_categories} />
 
                         {/* Detailed Product Table */}
                         <div className="card-premium lg:col-span-2">

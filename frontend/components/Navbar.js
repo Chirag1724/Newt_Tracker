@@ -9,10 +9,12 @@ export default function Navbar() {
     const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
 
     useEffect(() => {
+        setMounted(true);
         const currentUser = getCurrentUser();
         setUser(currentUser);
 
@@ -29,7 +31,7 @@ export default function Navbar() {
     };
 
     const isAuthPage = pathname === '/login' || pathname === '/register';
-    const isDashboard = pathname.includes('/admin') || pathname.includes('/distributor');
+    const isDashboard = pathname.startsWith('/admin') || pathname.startsWith('/distributor') || pathname.startsWith('/profile');
 
     // Hide navbar on dashboard pages for a cleaner workspace
     if (isDashboard) return null;
@@ -40,17 +42,15 @@ export default function Navbar() {
                 <div className="flex justify-between items-center">
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-3 group">
-                        <div className="bg-primary text-white p-2 rounded-xl group-hover:scale-110 transition-smooth shadow-lg shadow-primary/20">
-                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                            </svg>
+                        <div className="w-10 h-10 group-hover:scale-110 transition-smooth bg-primary/5 rounded-xl flex items-center justify-center p-1">
+                            <img src="/icon.png" alt="Newt Tracker Logo" className="w-full h-full object-contain" />
                         </div>
                         <span className="font-heading text-2xl font-bold tracking-tight text-dark">Newt Tracker</span>
                     </Link>
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-8">
-                        {!user ? (
+                        {mounted && !user ? (
                             <>
                                 {!isAuthPage && (
                                     <>
@@ -69,7 +69,7 @@ export default function Navbar() {
                                     </>
                                 )}
                             </>
-                        ) : (
+                        ) : mounted && user ? (
                             <>
                                 <Link
                                     href={user.role === 'admin' ? '/admin/dashboard' : '/distributor/dashboard'}
@@ -90,7 +90,7 @@ export default function Navbar() {
                                     Logout
                                 </button>
                             </>
-                        )}
+                        ) : null}
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -111,7 +111,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Menu */}
-                {isMenuOpen && (
+                {isMenuOpen && mounted && (
                     <div className="md:hidden mt-4 glass p-6 rounded-3xl space-y-4 animate-fadeIn">
                         {!user ? (
                             <>

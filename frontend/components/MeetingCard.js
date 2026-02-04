@@ -129,15 +129,33 @@ export default function MeetingCard({ meeting, onClick }) {
             </div>
 
             {/* Footer */}
-            <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
-                <span className="text-xs text-gray-500">
-                    {formatDate(meeting.created_at)}
-                </span>
-                {meeting.user_name && (
-                    <span className="text-xs font-semibold text-primary">
-                        {meeting.user_name}
+            <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="flex justify-between items-center mb-2">
+                    <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                        {formatDate(meeting.created_at)}
                     </span>
-                )}
+                    {meeting.user_name && (
+                        <span className="text-xs font-bold text-primary">
+                            By: {meeting.user_name}
+                        </span>
+                    )}
+                </div>
+
+                {/* Hackathon Verification Indicators */}
+                <div className="flex gap-2">
+                    <div className="flex items-center space-x-1 bg-green-50 text-green-600 px-2 py-0.5 rounded-full border border-green-100">
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-[10px] font-black uppercase italic tracking-tighter">GPS Verified</span>
+                    </div>
+                    <div className="flex items-center space-x-1 bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full border border-blue-100">
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c.076 0 .151.004.225.013a13.383 13.383 0 01-1.418 2.928 15.655 15.655 0 01-.649-1.383A14.28 14.28 0 018.158 5.54 13.161 13.161 0 0110 4z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-[10px] font-black uppercase italic tracking-tighter">Sync Verified</span>
+                    </div>
+                </div>
             </div>
         </div>
     );

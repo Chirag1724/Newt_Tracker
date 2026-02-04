@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import MapPicker from '@/components/MapPicker';
 import DashboardLayout from '@/components/DashboardLayout';
+import { toast } from '@/lib/toastUtils';
+import { ButtonLoader } from '@/components/LoadingSkeletons';
 
 export default function TrackSalesPage() {
     const router = useRouter();
     const [saleType, setSaleType] = useState('B2C');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(false);
 
     const [formData, setFormData] = useState({
         product_sku: '',
@@ -45,16 +45,9 @@ export default function TrackSalesPage() {
     // Auto-calculate amount based on quantity
     useEffect(() => {
         if (formData.quantity && formData.pack_size) {
-            // Simple pricing logic (can be customized)
             const basePrice = {
-                '250ml': 400,
-                '500ml': 500,
-                '1L': 600,
-                '2L': 1200,
-                '1kg': 500,
-                '2kg': 1000,
-                '5kg': 600,
-                '10kg': 1200
+                '250ml': 400, '500ml': 500, '1L': 600, '2L': 1200,
+                '1kg': 500, '2kg': 1000, '5kg': 600, '10kg': 1200
             };
 
             const unitPrice = basePrice[formData.pack_size] || 500;
@@ -74,6 +67,7 @@ export default function TrackSalesPage() {
             longitude: locationData.longitude,
             location_address: locationData.address
         }));
+        toast.success('Location captured');
     };
 
     const validate = () => {
@@ -87,11 +81,10 @@ export default function TrackSalesPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null);
 
         const validationError = validate();
         if (validationError) {
-            setError(validationError);
+            toast.error(validationError);
             return;
         }
 
@@ -107,13 +100,11 @@ export default function TrackSalesPage() {
 
             await api.post('/sales', payload);
 
-            setSuccess(true);
-            setTimeout(() => {
-                router.push('/distributor/sales');
-            }, 1500);
+            toast.success('Sale tracked successfully!');
+            router.push('/distributor/sales');
         } catch (err) {
             console.error('Submit error:', err);
-            setError(err.response?.data?.message || 'Failed to track sale');
+            toast.error(err.response?.data?.message || 'Failed to track sale');
         } finally {
             setLoading(false);
         }
@@ -121,13 +112,12 @@ export default function TrackSalesPage() {
 
     return (
         <DashboardLayout role="distributor">
-            <div className="min-h-screen bg-background py-12">
-                <div className="max-w-4xl mx-auto px-6">
-                    {/* Header */}
+            <div className="min-h-screen bg-background py-12 px-6">
+                <div className="max-w-4xl mx-auto">
                     <div className="mb-8">
                         <button
                             onClick={() => router.back()}
-                            className="text-primary font-semibold mb-4 flex items-center space-x-2 hover:text-primary/80 transition-smooth"
+                            className="text-primary font-bold mb-4 flex items-center space-x-2 hover:translate-x-[-4px] transition-transform"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -135,85 +125,56 @@ export default function TrackSalesPage() {
                             <span>Back</span>
                         </button>
                         <h1 className="text-4xl font-bold text-dark mb-2">Track New Sale</h1>
-                        <p className="text-gray-600">Record your sales transaction</p>
+                        <p className="text-gray-600 font-medium">Record a sales transaction with location and customer details</p>
                     </div>
 
-                    {/* Success Message */}
-                    {success && (
-                        <div className="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-2xl flex items-center space-x-3">
-                            <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <div>
-                                <p className="font-semibold text-green-800">Sale tracked successfully!</p>
-                                <p className="text-sm text-green-600">Redirecting to sales list...</p>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Error Message */}
-                    {error && (
-                        <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-2xl text-red-700">
-                            {error}
-                        </div>
-                    )}
-
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="card-premium space-y-6">
-                        {/* Sale Type Selector */}
-                        <div>
-                            <label className="block text-sm font-semibold text-dark mb-3">
+                    <form onSubmit={handleSubmit} className="card-premium space-y-8">
+                        <div className="space-y-4">
+                            <label className="block text-sm font-bold text-dark uppercase tracking-wider">
                                 Sale Type <span className="text-red-500">*</span>
                             </label>
                             <div className="grid grid-cols-2 gap-4">
                                 <button
                                     type="button"
                                     onClick={() => setSaleType('B2C')}
-                                    className={`p-4 rounded-xl border-2 font-semibold transition-smooth ${saleType === 'B2C'
-                                        ? 'border-primary bg-primary/10 text-primary'
-                                        : 'border-gray-200 hover:border-gray-300'
+                                    className={`p-6 rounded-2xl border-2 font-bold transition-all duration-300 ${saleType === 'B2C'
+                                        ? 'border-primary bg-primary/10 text-primary shadow-lg scale-[1.02]'
+                                        : 'border-gray-100 bg-gray-50 text-gray-400 hover:border-gray-200'
                                         }`}
                                 >
-                                    B2C (Direct to Consumer)
+                                    B2C (Consumer)
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setSaleType('B2B')}
-                                    className={`p-4 rounded-xl border-2 font-semibold transition-smooth ${saleType === 'B2B'
-                                        ? 'border-secondary bg-secondary/10 text-secondary'
-                                        : 'border-gray-200 hover:border-gray-300'
+                                    className={`p-6 rounded-2xl border-2 font-bold transition-all duration-300 ${saleType === 'B2B'
+                                        ? 'border-secondary bg-secondary/10 text-secondary shadow-lg scale-[1.02]'
+                                        : 'border-gray-100 bg-gray-50 text-gray-400 hover:border-gray-200'
                                         }`}
                                 >
-                                    B2B (Business to Business)
+                                    B2B (Business)
                                 </button>
                             </div>
                         </div>
 
-                        {/* Product SKU */}
-                        <div>
-                            <label className="block text-sm font-semibold text-dark mb-2">
-                                Product SKU <span className="text-red-500">*</span>
-                            </label>
-                            <select
-                                name="product_sku"
-                                value={formData.product_sku}
-                                onChange={handleInputChange}
-                                className="input-field"
-                                required
-                            >
-                                <option value="">Select Product</option>
-                                {productSKUs.map(sku => (
-                                    <option key={sku} value={sku}>{sku}</option>
-                                ))}
-                            </select>
-                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-bold text-dark mb-2">Product SKU *</label>
+                                <select
+                                    name="product_sku"
+                                    value={formData.product_sku}
+                                    onChange={handleInputChange}
+                                    className="input-field"
+                                >
+                                    <option value="">Select Product</option>
+                                    {productSKUs.map(sku => (
+                                        <option key={sku} value={sku}>{sku}</option>
+                                    ))}
+                                </select>
+                            </div>
 
-                        {/* Pack Size & Quantity */}
-                        <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-semibold text-dark mb-2">
-                                    Pack Size
-                                </label>
+                                <label className="block text-sm font-bold text-dark mb-2">Pack Size</label>
                                 <select
                                     name="pack_size"
                                     value={formData.pack_size}
@@ -228,118 +189,83 @@ export default function TrackSalesPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-dark mb-2">
-                                    Quantity <span className="text-red-500">*</span>
-                                </label>
+                                <label className="block text-sm font-bold text-dark mb-2">Quantity *</label>
                                 <input
                                     type="number"
                                     name="quantity"
                                     value={formData.quantity}
                                     onChange={handleInputChange}
                                     className="input-field"
-                                    placeholder="10"
-                                    min="1"
-                                    required
+                                    placeholder="Units sold"
                                 />
                             </div>
-                        </div>
 
-                        {/* Amount */}
-                        <div>
-                            <label className="block text-sm font-semibold text-dark mb-2">
-                                Amount (₹) <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="number"
-                                name="amount"
-                                value={formData.amount}
-                                onChange={handleInputChange}
-                                className="input-field"
-                                placeholder="5000"
-                                min="1"
-                                required
-                            />
-                            {formData.amount && (
-                                <p className="mt-2 text-sm text-gray-600">
-                                    Amount: ₹{parseFloat(formData.amount).toLocaleString('en-IN')}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* Mode & Customer Name */}
-                        <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-semibold text-dark mb-2">
-                                    Mode
-                                </label>
-                                <select
-                                    name="mode"
-                                    value={formData.mode}
+                                <label className="block text-sm font-bold text-dark mb-2">Total Amount (₹) *</label>
+                                <input
+                                    type="number"
+                                    name="amount"
+                                    value={formData.amount}
                                     onChange={handleInputChange}
                                     className="input-field"
-                                >
-                                    <option value="Direct">Direct</option>
-                                    <option value="Distributor">Distributor</option>
-                                </select>
+                                    placeholder="Total revenue"
+                                />
+                                {formData.amount && (
+                                    <p className="mt-2 text-xs font-bold text-primary">
+                                        Confirmed: ₹{parseFloat(formData.amount).toLocaleString('en-IN')}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-dark mb-2">
-                                    Customer Name <span className="text-red-500">*</span>
-                                </label>
+                                <label className="block text-sm font-bold text-dark mb-2">Customer Name *</label>
                                 <input
                                     type="text"
                                     name="customer_name"
                                     value={formData.customer_name}
                                     onChange={handleInputChange}
                                     className="input-field"
-                                    placeholder="Customer name"
-                                    required
+                                    placeholder="Full Name"
                                 />
                             </div>
                         </div>
 
-                        {/* Repeat Order Checkbox */}
-                        <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-xl">
-                            <input
-                                type="checkbox"
-                                name="is_repeat_order"
-                                id="is_repeat_order"
-                                checked={formData.is_repeat_order}
-                                onChange={handleInputChange}
-                                className="w-5 h-5 text-primary rounded focus:ring-primary"
-                            />
-                            <label htmlFor="is_repeat_order" className="text-sm font-semibold text-dark cursor-pointer">
-                                This is a repeat order from an existing customer
-                            </label>
+                        <div className="bg-gray-50 p-6 rounded-2xl space-y-4">
+                            <div className="flex items-center space-x-3">
+                                <input
+                                    type="checkbox"
+                                    name="is_repeat_order"
+                                    id="is_repeat_order"
+                                    checked={formData.is_repeat_order}
+                                    onChange={handleInputChange}
+                                    className="w-6 h-6 text-primary rounded-lg border-gray-300 focus:ring-primary"
+                                />
+                                <label htmlFor="is_repeat_order" className="text-sm font-bold text-dark cursor-pointer">
+                                    Repeat Order from Existing Customer
+                                </label>
+                            </div>
                         </div>
 
-                        {/* Location Picker */}
-                        <MapPicker onLocationSelect={handleLocationSelect} />
+                        <div className="space-y-6">
+                            <label className="block text-sm font-bold text-dark uppercase tracking-wider">Transaction Location *</label>
+                            <MapPicker onLocationSelect={handleLocationSelect} />
+                        </div>
 
-                        {/* Submit Button */}
-                        <div className="flex space-x-4">
+                        <div className="flex gap-4 pt-4">
                             <button
                                 type="button"
                                 onClick={() => router.back()}
-                                className="btn-outline flex-1"
+                                className="btn-soft flex-1"
                                 disabled={loading}
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="btn-primary flex-1"
+                                className="btn-primary flex-1 py-4"
                                 disabled={loading}
                             >
-                                {loading ? (
-                                    <span className="flex items-center justify-center space-x-2">
-                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                                        <span>Tracking Sale...</span>
-                                    </span>
-                                ) : (
-                                    'Track Sale'
-                                )}
+                                {loading ? <ButtonLoader /> : 'Record Sale'}
                             </button>
                         </div>
                     </form>

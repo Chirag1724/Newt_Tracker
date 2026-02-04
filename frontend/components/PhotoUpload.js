@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import api from '@/lib/api';
+import { optimizeImage } from '@/lib/imageOptimizer';
 
 export default function PhotoUpload({ onPhotosChange, maxPhotos = 5 }) {
     const [photos, setPhotos] = useState([]);
     const [uploading, setUploading] = useState(false);
+    const [optimizing, setOptimizing] = useState(false);
     const [error, setError] = useState(null);
 
     const handleFileSelect = async (e) => {
@@ -17,12 +19,8 @@ export default function PhotoUpload({ onPhotosChange, maxPhotos = 5 }) {
             return;
         }
 
-        // Check file sizes and types
+        // Check file types
         for (const file of files) {
-            if (file.size > 5 * 1024 * 1024) {
-                setError('Each photo must be less than 5MB');
-                return;
-            }
             if (!file.type.startsWith('image/')) {
                 setError('Only image files are allowed');
                 return;
@@ -30,13 +28,19 @@ export default function PhotoUpload({ onPhotosChange, maxPhotos = 5 }) {
         }
 
         setError(null);
-        setUploading(true);
+        setOptimizing(true);
 
         try {
             const formData = new FormData();
-            files.forEach(file => {
-                formData.append('photos', file);
-            });
+
+            // Optimize each image before adding to FormData
+            for (const file of files) {
+                const optimizedBlob = await optimizeImage(file);
+                formData.append('photos', optimizedBlob, file.name);
+            }
+
+            setOptimizing(false);
+            setUploading(true);
 
             const response = await api.post('/meetings/upload-photos', formData, {
                 headers: {
@@ -86,15 +90,21 @@ export default function PhotoUpload({ onPhotosChange, maxPhotos = 5 }) {
                 />
                 <label
                     htmlFor="photo-upload"
-                    className={`block w-full p-8 border-2 border-dashed rounded-2xl text-center cursor-pointer transition-smooth ${uploading || photos.length >= maxPhotos
-                            ? 'border-gray-200 bg-gray-50 cursor-not-allowed'
-                            : 'border-primary/30 bg-primary/5 hover:border-primary hover:bg-primary/10'
+                    className={`block w-full p-8 border-2 border-dashed rounded-2xl text-center cursor-pointer transition-smooth ${uploading || optimizing || photos.length >= maxPhotos
+                        ? 'border-gray-200 bg-gray-50 cursor-not-allowed'
+                        : 'border-primary/30 bg-primary/5 hover:border-primary hover:bg-primary/10'
                         }`}
                 >
-                    {uploading ? (
+                    {optimizing ? (
+                        <div className="flex flex-col items-center space-y-2">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-secondary"></div>
+                            <p className="text-sm text-gray-600 font-bold">Saving mobile data...</p>
+                            <p className="text-xs text-secondary font-semibold uppercase tracking-tighter">Compressing for rural Network</p>
+                        </div>
+                    ) : uploading ? (
                         <div className="flex flex-col items-center space-y-2">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                            <p className="text-sm text-gray-600">Uploading photos...</p>
+                            <p className="text-sm text-gray-600 font-bold">Uploading proof...</p>
                         </div>
                     ) : photos.length >= maxPhotos ? (
                         <div>

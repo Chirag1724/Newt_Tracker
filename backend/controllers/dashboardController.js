@@ -362,9 +362,22 @@ const getAnalytics = async (req, res) => {
 
         res.json({
             success: true,
-            product_performance: productPerformance.rows,
-            meeting_categories: meetingCategories.rows,
-            monthly_comparison: monthlyComparison.rows[0]
+            product_performance: productPerformance.rows.map(p => ({
+                ...p,
+                sale_count: parseInt(p.sale_count),
+                total_quantity: parseInt(p.total_quantity),
+                total_revenue: parseFloat(p.total_revenue || 0),
+                avg_price: parseFloat(p.avg_price || 0)
+            })),
+            meeting_categories: meetingCategories.rows.map(m => ({
+                ...m,
+                count: parseInt(m.count),
+                avg_potential: parseFloat(m.avg_potential || 0)
+            })),
+            monthly_comparison: {
+                current_month_sales: parseFloat(monthlyComparison.rows[0].current_month_sales || 0),
+                previous_month_sales: parseFloat(monthlyComparison.rows[0].previous_month_sales || 0)
+            }
         });
     } catch (error) {
         console.error('Analytics error:', error);
