@@ -18,8 +18,7 @@ export const metadata = {
     other: {
         'mobile-web-app-capable': 'yes',
         'apple-mobile-web-app-capable': 'yes',
-    },
-    manifest: '/manifest.webmanifest'
+    }
 }
 
 export const viewport = {

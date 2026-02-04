@@ -5,8 +5,10 @@ export default function manifest() {
         description: 'Professional field force tracking and sales management for rural distributors.',
         start_url: '/',
         display: 'standalone',
+        display_override: ['window-controls-overlay', 'minimal-ui'],
         background_color: '#ffffff',
         theme_color: '#2D5016',
+        prefer_related_applications: false,
         scope: '/',
         icons: [
             {
