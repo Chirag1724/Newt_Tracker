@@ -22,23 +22,31 @@ const log = (msg) => {
     console.log(msg);
 };
 
-// Test database connection immediately
-const testConnection = async () => {
-    log('⏳ Connecting to database...');
-    try {
-        const client = await pool.connect();
-        log('✅ Connected to PostgreSQL database successfully!');
-        client.release();
-    } catch (err) {
-        log(`❌ Database connection error! Message: ${err.message}`);
-        log('--------------------------------------------------');
-        log('Common fixes:');
-        log('1. Check if DATABASE_URL in .env is correct.');
-        log('2. Ensure your IP is whitelisted in Supabase (if needed).');
-        log('3. Verify that the "users" table exists in your database.');
-        log('4. If using Supabase pooler, check the port (6543 for Transaction, 5432 for Session).');
-        log('--------------------------------------------------');
-    }
+const retry = require('retry');
+
+// Test database connection with retry logic
+const testConnection = () => {
+    const operation = retry.operation({
+        retries: 5,
+        factor: 2,
+        minTimeout: 1000,
+        maxTimeout: 30000,
+    });
+
+    operation.attempt(async (currentAttempt) => {
+        log(`⏳ Connecting to database... (Attempt ${currentAttempt})`);
+        try {
+            const client = await pool.connect();
+            log('✅ Connected to PostgreSQL database successfully!');
+            client.release();
+        } catch (err) {
+            if (operation.retry(err)) {
+                return;
+            }
+            log(`❌ Database connection error after ${currentAttempt} attempts! Message: ${err.message}`);
+            // ... (keep existing helpful logs if desired, or simplify)
+        }
+    });
 };
 
 testConnection();
