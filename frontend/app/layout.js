@@ -33,7 +33,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
     return (
         <html lang="en">
-            <body className="font-body">
+            <body className="font-body" suppressHydrationWarning>
                 <ClientProviders>
                     <Navbar />
                     <main className="min-h-screen">

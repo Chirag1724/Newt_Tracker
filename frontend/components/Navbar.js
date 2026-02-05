@@ -31,12 +31,11 @@ export default function Navbar() {
         router.push('/login');
     };
 
-    const isAuthPage = pathname?.toLowerCase().includes('/login') || pathname?.toLowerCase().includes('/register');
-    const isDashboard = pathname?.toLowerCase().startsWith('/admin') || pathname?.toLowerCase().startsWith('/distributor') || pathname?.toLowerCase().startsWith('/profile');
+    const isAuthPage = pathname === '/login' || pathname === '/register';
+    const isDashboard = pathname.startsWith('/admin') || pathname.startsWith('/distributor') || pathname.startsWith('/profile');
 
-    // Return nothing during SSR and initial hydration to avoid mismatches
-    // Then after hydration, we return the Nav if it's not an auth/dashboard page
-    if (!mounted || isAuthPage || isDashboard) return null;
+    // Hide navbar on dashboard pages for a cleaner workspace
+    if (isDashboard) return null;
 
     return (
         <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass py-3' : 'bg-transparent py-5'}`}>
