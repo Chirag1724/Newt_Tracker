@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getCurrentUser, logout } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
 import api from '@/lib/api';
 import StatsCard from '@/components/StatsCard';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -114,10 +114,6 @@ export default function AdminDashboard() {
             const response = await api.get('/dashboard/admin');
             setDashboardData(response.data);
         } catch (err) {
-            if (err.response?.status === 401) {
-                logout();
-                return;
-            }
             setError('Failed to load dashboard data');
             console.error(err);
         } finally {
