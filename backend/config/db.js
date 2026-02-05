@@ -1,6 +1,10 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
+if (!process.env.DATABASE_URL) {
+    console.error('❌ CRITICAL: DATABASE_URL environment variable is missing!');
+}
+
 // Create PostgreSQL connection pool
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -12,14 +16,9 @@ const pool = new Pool({
     max: 20,
 });
 
-const fs = require('fs');
-const path = require('path');
-const logPath = path.join(__dirname, '../db-connection.log');
-
 const log = (msg) => {
     const time = new Date().toISOString();
-    fs.appendFileSync(logPath, `[${time}] ${msg}\n`);
-    console.log(msg);
+    console.log(`[${time}] ${msg}`);
 };
 
 const retry = require('retry');
