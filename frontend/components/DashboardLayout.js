@@ -9,6 +9,7 @@ import { getCurrentUser, isAuthenticated } from '@/lib/auth';
 export default function DashboardLayout({ children, role }) {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
         // Check authentication
@@ -41,7 +42,7 @@ export default function DashboardLayout({ children, role }) {
                     </div>
                 </div>
                 {/* Main Content Skeleton */}
-                <main className="flex-1 p-8">
+                <main className="flex-1 p-4 md:p-8">
                     <div className="max-w-7xl mx-auto text-center py-20">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
                         <p className="text-gray-400 font-medium">Securing session...</p>
@@ -52,16 +53,23 @@ export default function DashboardLayout({ children, role }) {
     }
 
     return (
-        <div className="flex min-h-screen bg-background pb-20 md:pb-0">
-            <DashboardSidebar role={role} />
-            <main className="flex-1 md:ml-72 transition-all duration-300">
-                <div className="p-6 md:p-8">
-                    <div className="max-w-7xl mx-auto">
+        <div className="flex min-h-screen bg-[#F8FAFC] pb-24 md:pb-0">
+            <DashboardSidebar
+                role={role}
+                isOpen={isSidebarOpen}
+                setIsOpen={setIsSidebarOpen}
+            />
+            <main className="flex-1 md:ml-72 transition-all duration-500">
+                <div className="p-4 md:p-10">
+                    <div className="max-w-7xl mx-auto space-y-8">
                         {children}
                     </div>
                 </div>
             </main>
-            <MobileBottomNav role={role} />
+            <MobileBottomNav
+                role={role}
+                onMenuClick={() => setIsSidebarOpen(true)}
+            />
         </div>
     );
 }

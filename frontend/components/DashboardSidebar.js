@@ -5,11 +5,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { logout, getCurrentUser } from '@/lib/auth';
 
-export default function DashboardSidebar({ role }) {
+export default function DashboardSidebar({ role, isOpen, setIsOpen }) {
     const pathname = usePathname();
     const router = useRouter();
     const [user] = useState(getCurrentUser());
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -47,66 +46,61 @@ export default function DashboardSidebar({ role }) {
 
     return (
         <>
-            {/* Mobile Sidebar Toggle */}
-            <button
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="md:hidden fixed bottom-6 right-6 z-50 bg-primary text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-smooth"
-            >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-
             {/* Sidebar */}
             <aside className={`
-                fixed left-0 top-0 h-screen bg-white border-r border-gray-200 z-40 transition-transform duration-300
-                ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 w-72
+                fixed left-0 top-0 h-screen bg-white border-r border-slate-100 z-[60] transition-all duration-500
+                ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 w-72 shadow-[20px_0_50px_rgba(0,0,0,0.02)]
             `}>
                 <div className="flex flex-col h-full">
-                    <div className="p-6 border-b border-gray-200">
+                    {/* Logo Section */}
+                    <div className="p-8">
                         <Link href="/" className="flex items-center space-x-3 group">
-                            <div className="w-10 h-10 group-hover:scale-110 transition-smooth bg-primary/5 rounded-xl flex items-center justify-center p-1">
-                                <img src="/icon.png" alt="Newt Tracker Logo" className="w-full h-full object-contain" />
+                            <div className="relative">
+                                <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                <div className="relative w-10 h-10 group-hover:scale-110 transition-all duration-500 bg-slate-900 rounded-2xl flex items-center justify-center p-2 shadow-2xl">
+                                    <img src="/icon.png" alt="Logo" className="w-full h-full object-contain brightness-0 invert" />
+                                </div>
                             </div>
-                            <span className="font-heading text-xl font-bold tracking-tight text-dark">Newt Tracker</span>
+                            <span className="font-heading text-2xl font-black tracking-tighter text-slate-900 group-hover:tracking-normal transition-all duration-500">Newt</span>
                         </Link>
                     </div>
 
-                    {/* User Info */}
-                    <div className="p-6 border-b border-gray-200">
+                    {/* User Profile Section */}
+                    <div className="mx-4 mb-6 p-4 rounded-3xl bg-slate-50 border border-slate-100 group hover:bg-white hover:shadow-xl transition-all duration-500">
                         <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/60 text-white rounded-full flex items-center justify-center font-bold text-lg shadow-lg">
+                            <div className="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center font-black text-xl shadow-xl group-hover:rotate-3 transition-transform duration-500">
                                 {user?.name?.charAt(0).toUpperCase()}
                             </div>
-                            <div className="flex-1">
-                                <p className="font-bold text-dark text-sm">{user?.name}</p>
-                                <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
-                                {user?.state && (
-                                    <p className="text-xs text-gray-400">{user.state}</p>
-                                )}
+                            <div className="flex-1 min-w-0">
+                                <p className="font-black text-slate-900 text-sm truncate">{user?.name}</p>
+                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{user?.role}</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Navigation Links */}
-                    <nav className="flex-1 p-4 overflow-y-auto">
-                        <ul className="space-y-2">
+                    <nav className="flex-1 px-4 overflow-y-auto custom-scrollbar">
+                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-4">Main Menu</div>
+                        <ul className="space-y-1.5">
                             {links.map(link => {
                                 const isActive = pathname === link.href;
                                 return (
                                     <li key={link.href}>
                                         <Link
                                             href={link.href}
-                                            className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-smooth ${isActive
-                                                ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                                                : 'text-gray-600 hover:bg-gray-100'
+                                            className={`flex items-center space-x-3 px-4 py-3.5 rounded-2xl transition-all duration-500 group relative ${isActive
+                                                ? 'bg-slate-900 text-white shadow-2xl shadow-slate-200'
+                                                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
                                                 }`}
-                                            onClick={() => setIsSidebarOpen(false)}
+                                            onClick={() => setIsOpen(false)}
                                         >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={link.icon} />
+                                            {isActive && (
+                                                <div className="absolute left-1 w-1 h-6 bg-primary rounded-full"></div>
+                                            )}
+                                            <svg className={`w-5 h-5 transition-transform duration-500 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={isActive ? 2.5 : 2} d={link.icon} />
                                             </svg>
-                                            <span className="font-semibold text-sm">{link.label}</span>
+                                            <span className="font-bold text-sm tracking-tight">{link.label}</span>
                                         </Link>
                                     </li>
                                 );
@@ -114,35 +108,36 @@ export default function DashboardSidebar({ role }) {
                         </ul>
                     </nav>
 
-                    {/* Bottom Section (Fixed) */}
-                    <div className="p-4 border-t border-gray-100 flex flex-col gap-4 bg-white">
-                        {/* Language Toggle */}
-                        <div className="bg-gray-50 p-2 rounded-2xl border border-gray-100">
-                            <div className="flex bg-white p-1 rounded-xl border border-gray-200">
-                                <button className="flex-1 py-1.5 px-2 bg-primary text-white rounded-lg text-[10px] font-black shadow-sm transition-all hover:scale-105">ENGLISH</button>
-                                <button className="flex-1 py-1.5 px-2 text-gray-500 rounded-lg text-[10px] font-black hover:bg-gray-50 transition-all font-heading" onClick={() => alert('Hindi localization coming in next update!')}>हिंदी</button>
+                    {/* Bottom Section */}
+                    <div className="p-4 mt-auto space-y-3">
+                        {/* Language Selector In-line */}
+                        <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Language</span>
+                            <div className="flex gap-1 p-0.5 bg-slate-200/50 rounded-xl">
+                                <button className="px-2.5 py-1 bg-white text-slate-900 rounded-lg text-[8px] font-black shadow-sm">EN</button>
+                                <button className="px-2.5 py-1 text-slate-400 hover:text-slate-600 rounded-lg text-[8px] font-black transition-colors" onClick={() => alert('Hindi coming soon!')}>HI</button>
                             </div>
                         </div>
 
-                        {/* Logout Button */}
+                        {/* Logout Button - Minimal */}
                         <button
                             onClick={handleLogout}
-                            className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 font-bold transition-smooth text-sm"
+                            className="w-full flex items-center justify-between px-5 py-3.5 rounded-2xl bg-white border border-slate-100 hover:bg-red-50 hover:border-red-100 hover:text-red-600 transition-all duration-500 group"
                         >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            <span className="font-black text-[10px] uppercase tracking-[0.15em] transition-transform duration-500 group-hover:translate-x-1">Logout System</span>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
-                            <span>Logout</span>
                         </button>
                     </div>
                 </div>
             </aside>
 
             {/* Mobile Overlay */}
-            {isSidebarOpen && (
+            {isOpen && (
                 <div
-                    className="md:hidden fixed inset-0 bg-black/50 z-30"
-                    onClick={() => setIsSidebarOpen(false)}
+                    className="md:hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50"
+                    onClick={() => setIsOpen(false)}
                 />
             )}
         </>

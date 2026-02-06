@@ -11,7 +11,7 @@ const pool = new Pool({
     ssl: {
         rejectUnauthorized: false
     },
-    connectionTimeoutMillis: 10000, // Reduced to 10s for faster feedback
+    connectionTimeoutMillis: 10000,
     idleTimeoutMillis: 30000,
     max: 20,
 });
@@ -29,7 +29,7 @@ const testConnection = () => {
         retries: 5,
         factor: 2,
         minTimeout: 1000,
-        maxTimeout: 30000,
+        maxTimeout: 10000,
     });
 
     operation.attempt(async (currentAttempt) => {
@@ -39,11 +39,12 @@ const testConnection = () => {
             log('✅ Connected to PostgreSQL database successfully!');
             client.release();
         } catch (err) {
+            log(`⚠️ Connection attempt ${currentAttempt} failed: ${err.message}`);
             if (operation.retry(err)) {
                 return;
             }
-            log(`❌ Database connection error after ${currentAttempt} attempts! Message: ${err.message}`);
-            // ... (keep existing helpful logs if desired, or simplify)
+            log(`❌ Database connection error after ${currentAttempt} attempts!`);
+            console.error('Full connection error:', err);
         }
     });
 };

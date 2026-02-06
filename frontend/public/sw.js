@@ -1,4 +1,4 @@
-const CACHE_NAME = 'newt-tracker-v4';
+const CACHE_NAME = 'newt-tracker-v5';
 const ASSETS_TO_CACHE = [
   '/',
   '/icon.png',

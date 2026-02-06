@@ -263,8 +263,7 @@ const updateMeeting = async (req, res) => {
                 longitude = COALESCE($9, longitude),
                 location_address = COALESCE($10, location_address),
                 photos = COALESCE($11, photos),
-                notes = COALESCE($12, notes),
-                updated_at = NOW()
+                notes = COALESCE($12, notes)
             WHERE id = $13
             RETURNING *`,
             [

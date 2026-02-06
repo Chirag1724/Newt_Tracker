@@ -57,13 +57,13 @@ export default function HomePage() {
                         <div className="animate-fadeIn">
                             <div className="inline-flex items-center space-x-2 bg-primary/5 border border-primary/10 px-4 py-2 rounded-full mb-8">
                                 <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
-                                <span className="text-primary font-semibold text-sm">New Version 2.0 is Live</span>
+                                <span className="text-primary font-semibold text-sm">Precision Tracking For Newts</span>
                             </div>
                             <h1 className="text-6xl md:text-8xl font-bold text-dark mb-8 tracking-tight leading-[1.1]">
-                                Tracking Made <span className="gradient-text">Beautifully Simple.</span>
+                                Field Intelligence <span className="gradient-text">Beautifully Simple.</span>
                             </h1>
                             <p className="text-xl md:text-2xl text-gray-600 mb-12 leading-relaxed max-w-xl">
-                                Newt Tracker empowers your field teams with real-time tracking, intelligent management, and clear analytics. Everything you need, none of the complexity.
+                                Newt Tracker empowers ecological survey teams with real-time tracking, intelligent habitat management, and automated reporting.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-5">
                                 <Link href="/register" className="btn-primary group h-16 text-lg">

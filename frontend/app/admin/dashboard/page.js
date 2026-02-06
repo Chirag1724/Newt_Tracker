@@ -15,75 +15,88 @@ import React, { memo } from 'react';
 
 // Memoized Charts for performance
 const SalesTrendChart = memo(({ data }) => (
-    <div className="card-premium">
-        <h3 className="font-heading text-2xl font-bold text-dark mb-6">
-            Sales Trend (Last 30 Days)
+    <div className="card-premium h-[320px] md:h-auto overflow-hidden">
+        <h3 className="font-heading text-lg md:text-2xl font-bold text-slate-900 mb-2 md:mb-6">
+            Sales Trend
         </h3>
-        <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={data || []}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                    dataKey="date"
-                    tickFormatter={(date) => new Date(date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}
-                />
-                <YAxis />
-                <Tooltip
-                    formatter={(value) => `₹${parseFloat(value).toLocaleString('en-IN')}`}
-                    labelFormatter={(date) => new Date(date).toLocaleDateString('en-IN')}
-                />
-                <Legend />
-                <Line type="monotone" dataKey="revenue" stroke="#2D5016" strokeWidth={3} name="Revenue" />
-            </LineChart>
-        </ResponsiveContainer>
+        <div className="h-[200px] md:h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={data || []}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                    <XAxis
+                        dataKey="date"
+                        tick={{ fontSize: 10 }}
+                        tickFormatter={(date) => new Date(date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}
+                    />
+                    <YAxis tick={{ fontSize: 10 }} />
+                    <Tooltip
+                        contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }}
+                        formatter={(value) => `₹${parseFloat(value).toLocaleString('en-IN')}`}
+                        labelFormatter={(date) => new Date(date).toLocaleDateString('en-IN')}
+                    />
+                    <Line type="monotone" dataKey="revenue" stroke="#2D5016" strokeWidth={3} dot={{ r: 4, fill: '#2D5016' }} activeDot={{ r: 6 }} name="Revenue" isAnimationActive={false} />
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
     </div>
 ));
 
 const RevenuePieChart = memo(({ data }) => (
-    <div className="card-premium">
-        <h3 className="font-heading text-2xl font-bold text-dark mb-6">
-            B2C vs B2B Revenue
+    <div className="card-premium h-[320px] md:h-auto overflow-hidden">
+        <h3 className="font-heading text-lg md:text-2xl font-bold text-slate-900 mb-2 md:mb-6">
+            Revenue Source
         </h3>
-        <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-                <Pie
-                    data={data}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={(entry) => `${entry.name}: ₹${entry.value.toLocaleString('en-IN')}`}
-                    outerRadius={100}
-                    fill="#8884d8"
-                    dataKey="value"
-                >
-                    {data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                </Pie>
-                <Tooltip formatter={(value) => `₹${parseFloat(value).toLocaleString('en-IN')}`} />
-            </PieChart>
-        </ResponsiveContainer>
+        <div className="h-[200px] md:h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                    <Pie
+                        data={data}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                        isAnimationActive={false}
+                    >
+                        {data.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} cornerRadius={10} />
+                        ))}
+                    </Pie>
+                    <Tooltip
+                        contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }}
+                        formatter={(value) => `₹${parseFloat(value).toLocaleString('en-IN')}`}
+                    />
+                </PieChart>
+            </ResponsiveContainer>
+        </div>
     </div>
 ));
 
 const MeetingsTrendChart = memo(({ data }) => (
-    <div className="card-premium">
-        <h3 className="font-heading text-2xl font-bold text-dark mb-6">
-            Meetings Trend (Last 30 Days)
+    <div className="card-premium h-[320px] md:h-auto overflow-hidden">
+        <h3 className="font-heading text-lg md:text-2xl font-bold text-slate-900 mb-2 md:mb-6">
+            Activity Trend
         </h3>
-        <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data || []}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                    dataKey="date"
-                    tickFormatter={(date) => new Date(date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}
-                />
-                <YAxis />
-                <Tooltip labelFormatter={(date) => new Date(date).toLocaleDateString('en-IN')} />
-                <Legend />
-                <Bar dataKey="one_on_one" stackId="a" fill="#2D5016" name="One-on-One" />
-                <Bar dataKey="group_count" stackId="a" fill="#FF8C42" name="Group" />
-            </BarChart>
-        </ResponsiveContainer>
+        <div className="h-[200px] md:h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={data || []}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                    <XAxis
+                        dataKey="date"
+                        tick={{ fontSize: 10 }}
+                        tickFormatter={(date) => new Date(date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}
+                    />
+                    <YAxis tick={{ fontSize: 10 }} />
+                    <Tooltip
+                        contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }}
+                        labelFormatter={(date) => new Date(date).toLocaleDateString('en-IN')}
+                    />
+                    <Bar dataKey="one_on_one" stackId="a" fill="#2D5016" radius={[4, 4, 0, 0]} name="One-on-One" isAnimationActive={false} />
+                    <Bar dataKey="group_count" stackId="a" fill="#FF8C42" radius={[4, 4, 0, 0]} name="Group" isAnimationActive={false} />
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
     </div>
 ));
 
@@ -140,28 +153,32 @@ export default function AdminDashboard() {
         );
     }
 
-    // Prepare chart data
-    const salesTypeData = dashboardData?.stats ? [
+    // Prepare chart data memoized
+    const salesTypeData = React.useMemo(() => dashboardData?.stats ? [
         { name: 'B2C', value: parseFloat(dashboardData.stats.b2c_revenue || 0) },
         { name: 'B2B', value: parseFloat(dashboardData.stats.b2b_revenue || 0) }
-    ] : [];
+    ] : [], [dashboardData?.stats]);
 
     return (
         <DashboardLayout role="admin">
             <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
-                    {/* Header */}
-                    <div className="mb-8 animate-fadeIn">
-                        <h1 className="font-heading text-4xl md:text-5xl font-bold text-dark mb-2">
-                            Welcome back, {user?.name}! 👋
+                    {/* Header - Premium Header */}
+                    <div className="mb-6 md:mb-10 animate-fadeIn">
+                        <div className="flex items-center gap-2 text-primary opacity-60 mb-2">
+                            <span className="w-6 md:w-8 h-[2px] bg-current rounded-full"></span>
+                            <span className="text-[10px] font-black uppercase tracking-widest">Admin Control Center</span>
+                        </div>
+                        <h1 className="font-heading text-3xl md:text-6xl font-black text-slate-900 mb-2 tracking-tighter leading-none">
+                            Welcome, {user?.name.split(' ')[0]}! 👋
                         </h1>
-                        <p className="text-gray-600 text-lg">
-                            Here's what's happening with your team today
+                        <p className="text-slate-500 text-xs md:text-xl font-medium max-w-2xl leading-relaxed">
+                            A real-time snapshot of your entire operations.
                         </p>
                     </div>
 
-                    {/* Stats Cards Section */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    {/* Stats Cards Section - Responsive Grid */}
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8">
                         {loading ? (
                             Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)
                         ) : (
@@ -216,31 +233,36 @@ export default function AdminDashboard() {
                     {!loading && dashboardData && (
                         <>
                             {/* Charts Section */}
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-10">
                                 <SalesTrendChart data={dashboardData.sales_trend} />
                                 <RevenuePieChart data={salesTypeData} />
                                 <MeetingsTrendChart data={dashboardData.meetings_trend} />
 
-                                {/* Top Performers */}
+                                {/* Top Performers - Premium List */}
                                 <div className="card-premium">
-                                    <h3 className="font-heading text-2xl font-bold text-dark mb-6">
-                                        Top Performers (This Month)
-                                    </h3>
-                                    <div className="space-y-4">
+                                    <div className="flex items-center justify-between mb-6 md:mb-8">
+                                        <h3 className="font-heading text-xl md:text-2xl font-bold text-slate-900">Top Performers</h3>
+                                        <div className="w-8 h-8 md:w-10 md:h-10 bg-yellow-50 rounded-full flex items-center justify-center text-yellow-600">
+                                            <svg className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3 md:space-y-4">
                                         {dashboardData.top_performers && dashboardData.top_performers.slice(0, 5).map((performer, index) => (
-                                            <div key={performer.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-smooth">
-                                                <div className="flex items-center space-x-4">
-                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : index === 2 ? 'bg-amber-600' : 'bg-primary'}`}>
+                                            <div key={performer.id} className="flex items-center justify-between p-3 md:p-4 bg-slate-50/50 rounded-2xl md:rounded-3xl hover:bg-slate-100/50 transition-all duration-300 border border-transparent hover:border-slate-200">
+                                                <div className="flex items-center space-x-3 md:space-x-4">
+                                                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl flex items-center justify-center text-white font-bold shadow-lg text-xs md:text-base ${index === 0 ? 'bg-gradient-to-br from-yellow-400 to-orange-500 scale-110' : index === 1 ? 'bg-slate-400' : index === 2 ? 'bg-amber-600' : 'bg-slate-200 text-slate-400 shadow-none'}`}>
                                                         {index + 1}
                                                     </div>
-                                                    <div>
-                                                        <p className="font-bold text-dark">{performer.name}</p>
-                                                        <p className="text-xs text-gray-500">{performer.state}</p>
+                                                    <div className="min-w-0">
+                                                        <p className="font-black text-slate-900 text-xs md:text-sm truncate">{performer.name}</p>
+                                                        <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-wider">{performer.state}</p>
                                                     </div>
                                                 </div>
-                                                <div className="text-right">
-                                                    <p className="font-bold text-primary">₹{parseFloat(performer.revenue || 0).toLocaleString('en-IN')}</p>
-                                                    <p className="text-[10px] text-gray-400 font-semibold">{performer.sales} Sales</p>
+                                                <div className="text-right flex-shrink-0">
+                                                    <p className="font-black text-primary text-xs md:text-sm">₹{parseFloat(performer.revenue || 0).toLocaleString('en-IN')}</p>
+                                                    <p className="text-[8px] md:text-[10px] text-slate-400 font-bold">{performer.sales} Sales</p>
                                                 </div>
                                             </div>
                                         ))}
@@ -248,36 +270,41 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
 
-                            {/* State Stats Table */}
-                            <div className="card-premium mb-8 overflow-x-auto">
-                                <h3 className="font-heading text-2xl font-bold text-dark mb-6">State-wise Activity</h3>
-                                <table className="w-full">
-                                    <thead>
-                                        <tr className="border-b border-gray-200">
-                                            <th className="text-left py-3 px-4 font-semibold text-dark">State</th>
-                                            <th className="text-center py-3 px-4 font-semibold text-dark">Distributors</th>
-                                            <th className="text-center py-3 px-4 font-semibold text-dark">Meetings</th>
-                                            <th className="text-right py-3 px-4 font-semibold text-dark">Revenue</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {dashboardData.state_stats && dashboardData.state_stats.map(state => (
-                                            <tr key={state.state} className="border-b border-gray-100 hover:bg-gray-50 transition-smooth">
-                                                <td className="py-3 px-4 font-semibold text-dark">{state.state}</td>
-                                                <td className="py-3 px-4 text-center text-gray-600 font-semibold">{state.distributors}</td>
-                                                <td className="py-3 px-4 text-center text-gray-600 font-semibold">{state.meetings}</td>
-                                                <td className="py-3 px-4 text-right font-bold text-primary">
-                                                    ₹{parseFloat(state.sales || 0).toLocaleString('en-IN')}
-                                                </td>
+                            {/* State Stats Table - Responsive Container */}
+                            <div className="card-premium overflow-hidden">
+                                <h3 className="font-heading text-2xl font-bold text-slate-900 mb-8 px-2">Regional Performance Breakdown</h3>
+                                <div className="overflow-x-auto -mx-2">
+                                    <table className="w-full text-left border-separate border-spacing-y-2">
+                                        <thead>
+                                            <tr className="text-slate-400 text-xs font-black uppercase tracking-widest">
+                                                <th className="py-4 px-6 font-black">State</th>
+                                                <th className="py-4 px-6 text-center">Distributors</th>
+                                                <th className="py-4 px-6 text-center">Meetings</th>
+                                                <th className="py-4 px-6 text-right">Revenue Generated</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {dashboardData.state_stats && dashboardData.state_stats.map(state => (
+                                                <tr key={state.state} className="group hover:bg-slate-50/80 transition-all">
+                                                    <td className="py-4 px-6 rounded-l-3xl bg-slate-50/50 group-hover:bg-transparent font-black text-slate-900">{state.state}</td>
+                                                    <td className="py-4 px-6 text-center bg-slate-50/50 group-hover:bg-transparent text-slate-600 font-bold">{state.distributors}</td>
+                                                    <td className="py-4 px-6 text-center bg-slate-50/50 group-hover:bg-transparent text-slate-600 font-bold">{state.meetings}</td>
+                                                    <td className="py-4 px-6 rounded-r-3xl bg-slate-50/50 group-hover:bg-transparent text-right font-black text-primary tracking-tight">
+                                                        ₹{parseFloat(state.sales || 0).toLocaleString('en-IN')}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
-                            {/* Recent Activity List */}
+                            {/* Recent Activity List - Premium Design */}
                             <div className="card-premium">
-                                <h3 className="font-heading text-2xl font-bold text-dark mb-6">Recent Team Activity</h3>
+                                <div className="flex items-center justify-between mb-8">
+                                    <h3 className="font-heading text-2xl font-bold text-dark">Recent Team Activity</h3>
+                                    <span className="bg-primary/5 text-primary text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Live Updates</span>
+                                </div>
                                 <div className="space-y-4">
                                     {dashboardData.recent_activities && dashboardData.recent_activities.slice(0, 10).map((activity) => (
                                         <div

@@ -12,12 +12,15 @@ const samplesRoutes = require('./routes/samples');
 // Import database connection (this will test the connection)
 require('./config/db');
 
+const compression = require('compression');
+const helmet = require('helmet');
+
 // Initialize Express app
 const app = express();
 
 // Middleware
-// Middleware
-app.use(require('helmet')());
+app.use(compression()); // Compress all responses
+app.use(helmet());
 app.use(require('./config/cors') ? require('cors')(require('./config/cors')) : require('cors')());
 
 // Rate limiting

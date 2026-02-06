@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { login } from '@/lib/auth';
@@ -13,6 +13,12 @@ export default function LoginPage() {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        // Prefetch dashboard pages for instant transition after login
+        router.prefetch('/admin/dashboard');
+        router.prefetch('/distributor/dashboard');
+    }, [router]);
 
     const handleChange = (e) => {
         setFormData({

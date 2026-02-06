@@ -15,19 +15,18 @@ import React, { memo } from 'react';
 
 // Memoized Chart to prevent INP lag during interaction
 const PerformanceChart = memo(({ data }) => (
-    <div className="h-[350px]">
+    <div className="h-[250px] md:h-[350px]">
         <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontWeight: 600 }} />
-                <YAxis yAxisId="left" orientation="left" stroke="#2D5016" axisLine={false} tickLine={false} tick={{ fill: '#2D5016', fontWeight: 600 }} />
-                <YAxis yAxisId="right" orientation="right" stroke="#FF8C42" axisLine={false} tickLine={false} tick={{ fill: '#FF8C42', fontWeight: 600 }} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 10, fontWeight: 700 }} />
+                <YAxis yAxisId="left" orientation="left" stroke="#2D5016" axisLine={false} tickLine={false} tick={{ fill: '#2D5016', fontSize: 10, fontWeight: 700 }} />
+                <YAxis yAxisId="right" orientation="right" stroke="#FF8C42" axisLine={false} tickLine={false} tick={{ fill: '#FF8C42', fontSize: 10, fontWeight: 700 }} />
                 <Tooltip
-                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
+                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }}
                 />
-                <Legend verticalAlign="top" align="right" height={36} iconType="circle" />
-                <Bar yAxisId="left" dataKey="meetings" fill="#2D5016" name="Meetings" radius={[4, 4, 0, 0]} barSize={24} />
-                <Bar yAxisId="right" dataKey="sales" fill="#FF8C42" name="Sales (₹)" radius={[4, 4, 0, 0]} barSize={24} />
+                <Bar yAxisId="left" dataKey="meetings" fill="#2D5016" name="Meetings" radius={[6, 6, 0, 0]} barSize={20} isAnimationActive={false} />
+                <Bar yAxisId="right" dataKey="sales" fill="#FF8C42" name="Sales (₹)" radius={[6, 6, 0, 0]} barSize={20} isAnimationActive={false} />
             </BarChart>
         </ResponsiveContainer>
     </div>
@@ -57,8 +56,9 @@ export default function DistributorDashboard() {
             const data = response.data;
 
             // Merge weekly meetings and sales data
-            const weeklyData = data.weekly_meetings?.map(meeting => {
-                const sale = data.weekly_sales?.find(s => s.day === meeting.day);
+            const rawData = response.data;
+            const weeklyData = rawData.weekly_meetings?.map(meeting => {
+                const sale = rawData.weekly_sales?.find(s => s.day === meeting.day);
                 return {
                     day: meeting.day.trim(),
                     meetings: parseInt(meeting.meetings),
@@ -67,7 +67,7 @@ export default function DistributorDashboard() {
             }) || [];
 
             setDashboardData({
-                ...data,
+                ...rawData,
                 weeklyData
             });
         } catch (err) {
@@ -115,18 +115,22 @@ export default function DistributorDashboard() {
                         </div>
                     </div>
 
-                    {/* Header */}
-                    <div className="mb-8 animate-fadeIn">
-                        <h1 className="font-heading text-4xl md:text-5xl font-bold text-dark mb-2">
-                            Hello, {user?.name}! 👋
+                    {/* Header - Premium Header */}
+                    <div className="mb-6 md:mb-10 animate-fadeIn relative">
+                        <div className="flex items-center gap-2 text-primary opacity-60 mb-2">
+                            <span className="w-6 md:w-8 h-[2px] bg-current rounded-full"></span>
+                            <span className="text-[10px] font-black uppercase tracking-widest">Personal Performance Portal</span>
+                        </div>
+                        <h1 className="font-heading text-3xl md:text-6xl font-black text-slate-900 mb-2 tracking-tighter leading-none">
+                            Hello, {user?.name.split(' ')[0]}! 👋
                         </h1>
-                        <p className="text-gray-600 text-lg font-medium">
-                            Choose an action below to start
+                        <p className="text-slate-500 text-xs md:text-xl font-medium max-w-2xl leading-relaxed">
+                            Track your impact, log meetings, and grow in real-time.
                         </p>
                     </div>
 
-                    {/* Stats Cards Row */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    {/* Stats Cards Row - Responsive Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8">
                         {loading ? (
                             Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)
                         ) : (
@@ -178,66 +182,67 @@ export default function DistributorDashboard() {
                         )}
                     </div>
 
-                    {/* Quick Action Tiles - Simplified for Low Literacy */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    {/* Quick Action Tiles - Premium Design */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-12">
                         <button
                             onClick={() => router.push('/distributor/log-meeting')}
-                            className="flex flex-col items-center justify-center p-8 bg-primary rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 active:scale-95 group"
+                            className="group flex flex-col items-center justify-center p-8 md:p-10 bg-primary rounded-[2.5rem] shadow-2xl shadow-primary/20 transition-all duration-500 hover:-translate-y-2 active:scale-95 text-center"
                         >
-                            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="w-20 h-20 md:w-24 md:h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                                <svg className="w-10 h-10 md:w-12 md:h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                 </svg>
                             </div>
-                            <span className="text-white text-2xl font-bold">Log Meeting</span>
-                            <span className="text-white/70 font-medium text-sm mt-1 text-center">Record meeting with proof</span>
+                            <span className="text-white text-2xl md:text-3xl font-black mb-2">Log Meeting</span>
+                            <span className="text-white/60 font-bold text-xs md:text-sm uppercase tracking-widest whitespace-nowrap">Instant Proof Verification</span>
                         </button>
 
                         <button
                             onClick={() => router.push('/distributor/track-sales')}
-                            className="flex flex-col items-center justify-center p-8 bg-secondary rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 active:scale-95 group"
+                            className="group flex flex-col items-center justify-center p-8 md:p-10 bg-secondary rounded-[2.5rem] shadow-2xl shadow-secondary/20 transition-all duration-500 hover:-translate-y-2 active:scale-95 text-center"
                         >
-                            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="w-20 h-20 md:w-24 md:h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                                <svg className="w-10 h-10 md:w-12 md:h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
-                            <span className="text-white text-2xl font-bold">Track Sale</span>
-                            <span className="text-white/70 font-medium text-sm mt-1 text-center">Confirm product sale</span>
+                            <span className="text-white text-2xl md:text-3xl font-black mb-2">Track Sale</span>
+                            <span className="text-white/60 font-bold text-xs md:text-sm uppercase tracking-widest whitespace-nowrap">Revenue Confirmation</span>
                         </button>
 
                         <button
                             onClick={() => router.push('/distributor/distribute-sample')}
-                            className="flex flex-col items-center justify-center p-8 bg-accent rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 active:scale-95 group sm:col-span-2 lg:col-span-1"
+                            className="group flex flex-col items-center justify-center p-8 md:p-10 bg-accent rounded-[2.5rem] shadow-2xl shadow-accent/20 transition-all duration-500 hover:-translate-y-2 active:scale-95 text-center sm:col-span-2 lg:col-span-1"
                         >
-                            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="w-20 h-20 md:w-24 md:h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                                <svg className="w-10 h-10 md:w-12 md:h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                 </svg>
                             </div>
-                            <span className="text-white text-2xl font-bold">Give Sample</span>
-                            <span className="text-white/70 font-medium text-sm mt-1 text-center">Log sample handout</span>
+                            <span className="text-white text-2xl md:text-3xl font-black mb-2">Give Sample</span>
+                            <span className="text-white/60 font-bold text-xs md:text-sm uppercase tracking-widest whitespace-nowrap">Inventory Update</span>
                         </button>
                     </div>
 
                     {!loading && dashboardData ? (
                         <>
                             {/* Weekly Chart */}
-                            <div className="card-premium mb-8">
-                                <h3 className="font-heading text-2xl font-bold text-dark mb-6">
-                                    Your Weekly Performance
+                            <div className="card-premium mb-8 overflow-hidden">
+                                <h3 className="font-heading text-xl md:text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                                    Weekly Performance
+                                    <span className="text-[10px] md:text-xs font-black uppercase tracking-widest bg-slate-100 text-slate-500 px-3 py-1 rounded-full">Live Stats</span>
                                 </h3>
                                 <PerformanceChart data={dashboardData.weeklyData} />
                             </div>
 
                             {/* Recent Activities */}
                             <div className="card-premium">
-                                <div className="flex items-center justify-between mb-8">
-                                    <h3 className="font-heading text-2xl font-bold text-dark">
-                                        Your Recent Activity
+                                <div className="flex items-center justify-between mb-6 md:mb-8">
+                                    <h3 className="font-heading text-xl md:text-2xl font-bold text-slate-900">
+                                        Recent Activity
                                     </h3>
-                                    <button onClick={() => router.push('/distributor/meetings')} className="text-sm font-bold text-primary hover:underline">
-                                        View All
+                                    <button onClick={() => router.push('/distributor/meetings')} className="text-[10px] md:text-xs font-black uppercase tracking-widest text-primary hover:opacity-70 transition-opacity">
+                                        View History →
                                     </button>
                                 </div>
                                 <div className="space-y-4">
@@ -249,22 +254,25 @@ export default function DistributorDashboard() {
                                                     setSelectedItem(activity);
                                                     setItemType(activity.type);
                                                 }}
-                                                className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-primary/20"
+                                                className="group flex items-center justify-between p-4 md:p-6 bg-slate-50/50 rounded-[2rem] hover:bg-white hover:shadow-xl hover:scale-[1.02] transition-all duration-500 cursor-pointer border border-transparent hover:border-slate-100"
                                             >
-                                                <div className="flex items-center space-x-5">
-                                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${activity.type === 'meeting' ? 'bg-primary' : activity.type === 'sale' ? 'bg-secondary' : 'bg-accent'}`}>
-                                                        {activity.type === 'meeting' ? 'M' : activity.type === 'sale' ? 'S' : 'P'}
+                                                <div className="flex items-center space-x-4 md:space-x-6">
+                                                    <div className={`w-12 h-12 md:w-16 md:h-16 rounded-[1.25rem] md:rounded-[1.5rem] flex items-center justify-center text-white shadow-xl transition-transform duration-500 group-hover:rotate-6 ${activity.type === 'meeting' ? 'bg-primary' : activity.type === 'sale' ? 'bg-secondary' : 'bg-accent'}`}>
+                                                        <span className="font-black text-lg md:text-xl">{activity.type === 'meeting' ? 'M' : activity.type === 'sale' ? 'S' : 'P'}</span>
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-dark text-lg">{activity.description}</p>
-                                                        <p className="text-sm text-gray-500 font-semibold">{activity.location}</p>
+                                                        <p className="font-black text-slate-900 text-base md:text-xl mb-0.5 md:mb-1">{activity.description}</p>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                                                            <p className="text-[10px] md:text-xs text-slate-500 font-bold uppercase tracking-widest truncate max-w-[150px] md:max-w-none">{activity.location}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className="text-right">
-                                                    <p className="font-bold text-gray-700">
+                                                <div className="text-right flex-shrink-0">
+                                                    <p className="font-black text-slate-900 text-sm md:text-base mb-0.5">
                                                         {new Date(activity.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </p>
-                                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+                                                    <p className="text-[9px] md:text-[10px] text-slate-400 font-black uppercase tracking-tighter">
                                                         {new Date(activity.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                                                     </p>
                                                 </div>
