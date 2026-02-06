@@ -1,4 +1,9 @@
-// Middleware removed to avoid Edge Runtime issues on Vercel
-// Authentication is handled in components/DashboardLayout.js
-export function middleware() { }
-export const config = { matcher: [] };
+import { NextResponse } from 'next/server';
+
+export function middleware(request) {
+    return NextResponse.next();
+}
+
+export const config = {
+    matcher: [],
+};
