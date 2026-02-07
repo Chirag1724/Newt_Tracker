@@ -1,9 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { isAuthenticated, getCurrentUser } from '@/lib/auth';
 
 // Simple SVG Icons
 const Icons = {
@@ -38,15 +36,8 @@ const Icons = {
 export default function HomePage() {
     const router = useRouter();
 
-    useEffect(() => {
-        if (isAuthenticated()) {
-            const user = getCurrentUser();
-            if (user) {
-                const dashboard = user.role === 'admin' ? '/admin/dashboard' : '/distributor/dashboard';
-                router.push(dashboard);
-            }
-        }
-    }, [router]);
+    // Let users see the landing page even if logged in
+    // They can click "Sign In to Dashboard" to go to their dashboard
 
     return (
         <div className="min-h-screen bg-background selection:bg-secondary/30">
