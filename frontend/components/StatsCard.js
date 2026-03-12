@@ -17,17 +17,17 @@ export default function StatsCard({ title, value, icon, color = 'primary', subti
 
             <div className="flex items-center justify-between relative z-10">
                 <div className="flex-1 min-w-0">
-                    <p className="text-slate-400 text-[10px] md:text-xs font-black uppercase tracking-[0.15em] mb-1.5 md:mb-2 truncate">
+                    <p className="text-gray-400 text-[10px] md:text-xs font-bold uppercase tracking-[0.15em] mb-1.5 md:mb-2 truncate">
                         {title}
                     </p>
                     <div className="flex items-baseline gap-1">
-                        <h3 className="text-xl md:text-3xl font-black text-slate-900 tracking-tight leading-none">
+                        <h3 className="text-xl md:text-3xl font-bold text-dark tracking-tight leading-none">
                             {value}
                         </h3>
                     </div>
                     {subtitle && (
-                        <p className="text-[10px] md:text-[11px] text-slate-500 font-bold mt-1.5 flex items-center gap-1">
-                            <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                        <p className="text-[10px] md:text-[11px] text-gray-500 font-bold mt-1.5 flex items-center gap-1">
+                            <span className="w-1 h-1 rounded-full bg-gray-300"></span>
                             {subtitle}
                         </p>
                     )}

@@ -34,49 +34,54 @@ export default function Navbar() {
     const isAuthPage = pathname === '/login' || pathname === '/register';
     const isDashboard = pathname.startsWith('/admin') || pathname.startsWith('/distributor') || pathname.startsWith('/profile');
 
-    // Hide navbar on dashboard pages for a cleaner workspace
-    if (isDashboard) return null;
+    // Prevent hydration mismatch by only rendering after mount
+    if (!mounted) return null;
+
+    // Hide navbar on dashboard and auth pages for a cleaner UI
+    if (isDashboard || isAuthPage) return null;
 
     return (
         <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass py-3' : 'bg-transparent py-5'}`}>
             <div className="max-w-7xl mx-auto px-6 md:px-12">
-                <div className="flex justify-between items-center">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-3 group">
-                        <div className="w-10 h-10 group-hover:scale-110 transition-smooth bg-primary/5 rounded-xl flex items-center justify-center p-1">
-                            <img src="/icon.png" alt="Newt Tracker Logo" className="w-full h-full object-contain" />
+                <div className="flex items-center justify-between">
+                    {/* Logo Section */}
+                    <Link href="/" className="flex items-center gap-3 group">
+                        <div className="w-11 h-11 bg-primary rounded-2xl flex items-center justify-center group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-primary/20">
+                            {/* Professional SVG Logo Icon */}
+                            <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 13.5C3 13.5 5.5 16.5 8.5 16.5C11.5 16.5 13 13.5 13 13.5C13 13.5 15.5 10.5 18.5 10.5C21.5 10.5 24 13.5 24 13.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <circle cx="6" cy="13.5" r="2.5" fill="currentColor" opacity="0.4" />
+                                <circle cx="18" cy="13.5" r="2.5" fill="currentColor" />
+                                <path d="M12 2L12 22" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" />
+                            </svg>
                         </div>
-                        <span className="font-heading text-2xl font-bold tracking-tight text-dark">Newt Tracker</span>
+                        <span className="font-bold text-dark font-heading text-2xl tracking-tighter group-hover:text-primary transition-colors duration-300">Newt Tracker</span>
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-8">
-                        {mounted && !user ? (
+                    <div className="hidden md:flex items-center gap-8">
+                        {!user ? (
                             <>
-                                {!isAuthPage && (
-                                    <>
-                                        <Link href="#features" className="text-gray-600 hover:text-primary transition-smooth font-medium">
-                                            Features
-                                        </Link>
-                                        <Link href="#how-it-works" className="text-gray-600 hover:text-primary transition-smooth font-medium">
-                                            How it Works
-                                        </Link>
-                                        <Link href="/login" className="text-dark hover:text-primary transition-smooth font-semibold">
-                                            Login
-                                        </Link>
-                                        <Link href="/register" className="btn-primary py-2.5 px-6">
-                                            Get Started
-                                        </Link>
-                                    </>
-                                )}
+                                <Link href="/#features" className="text-gray-600 hover:text-primary transition-smooth font-medium">
+                                    Features
+                                </Link>
+                                <Link href="/#how-it-works" className="text-gray-600 hover:text-primary transition-smooth font-medium">
+                                    How it Works
+                                </Link>
+                                <Link href="/#stats" className="text-gray-600 hover:text-primary transition-smooth font-medium">
+                                    Impact
+                                </Link>
+                                <Link href="/login" className="text-dark hover:text-primary transition-smooth font-semibold">
+                                    Login
+                                </Link>
+                                <Link href="/register" className="btn-primary py-2.5 px-6 text-sm">
+                                    Get Started
+                                </Link>
                             </>
-                        ) : mounted && user ? (
+                        ) : (
                             <>
-                                <Link
-                                    href={user.role === 'admin' ? '/admin/dashboard' : '/distributor/dashboard'}
-                                    className="text-primary hover:text-primary/80 transition-smooth font-bold"
-                                >
-                                    Go to Dashboard
+                                <Link href={user.role === 'admin' ? '/admin/dashboard' : '/distributor/dashboard'} className="btn-primary py-2.5 px-6 text-sm">
+                                    Dashboard
                                 </Link>
                                 <div className="flex items-center space-x-3 bg-white/50 border border-gray-100 px-4 py-2 rounded-2xl">
                                     <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
@@ -91,7 +96,7 @@ export default function Navbar() {
                                     Logout
                                 </button>
                             </>
-                        ) : null}
+                        )}
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -121,10 +126,19 @@ export default function Navbar() {
 
                         {!user ? (
                             <>
-                                <Link href="/login" className="block text-gray-600 hover:text-primary py-2 font-medium">
+                                <Link href="/#features" onClick={() => setIsMenuOpen(false)} className="block text-gray-600 hover:text-primary py-2 font-medium">
+                                    Features
+                                </Link>
+                                <Link href="/#how-it-works" onClick={() => setIsMenuOpen(false)} className="block text-gray-600 hover:text-primary py-2 font-medium">
+                                    How it Works
+                                </Link>
+                                <Link href="/#stats" onClick={() => setIsMenuOpen(false)} className="block text-gray-600 hover:text-primary py-2 font-medium">
+                                    Impact
+                                </Link>
+                                <Link href="/login" onClick={() => setIsMenuOpen(false)} className="block text-gray-600 hover:text-primary py-2 font-medium">
                                     Login
                                 </Link>
-                                <Link href="/register" className="btn-primary w-full">
+                                <Link href="/register" onClick={() => setIsMenuOpen(false)} className="btn-primary w-full block text-center">
                                     Get Started
                                 </Link>
                             </>

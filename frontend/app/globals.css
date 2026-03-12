@@ -2,8 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Public+Sans:wght@300;400;500;600;700&display=swap');
+/* Fonts are loaded via next/font in layout.js */
 
 /* Global Styles */
 * {
@@ -14,11 +13,10 @@
 
 html,
 body {
-  font-family: 'Public Sans', sans-serif;
-  background-color: #F8FAFC;
-  /* Softer, more modern blue-gray tint */
-  color: #0F172A;
-  /* Slate 900 for premium readability */
+  font-family: var(--font-public-sans), sans-serif;
+  background-color: #FFF8F0;
+  /* Balanced with background color from tailwind config */
+  color: #1A1A1A;
   scroll-behavior: smooth;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
@@ -31,7 +29,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-fraunces), serif;
   font-weight: 700;
   line-height: 1.2;
 }
@@ -110,18 +108,18 @@ h6 {
 
 /* Glassmorphism */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px) saturate(160%);
+  -webkit-backdrop-filter: blur(8px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .glass-premium {
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(20px) saturate(200%);
-  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
 }
 
 .glass-dark {

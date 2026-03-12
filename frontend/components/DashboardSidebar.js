@@ -8,11 +8,12 @@ import { logout, getCurrentUser } from '@/lib/auth';
 export default function DashboardSidebar({ role, isOpen, setIsOpen }) {
     const pathname = usePathname();
     const router = useRouter();
-    const [user] = useState(getCurrentUser());
+    const [user, setUser] = useState(null);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
+        setUser(getCurrentUser());
     }, []);
 
     const handleLogout = () => {
@@ -48,59 +49,100 @@ export default function DashboardSidebar({ role, isOpen, setIsOpen }) {
         <>
             {/* Sidebar */}
             <aside className={`
-                fixed left-0 top-0 h-screen bg-white border-r border-slate-100 z-[60] transition-all duration-500
-                ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 w-72 shadow-[20px_0_50px_rgba(0,0,0,0.02)]
+                fixed left-0 top-0 h-screen bg-background border-r border-orange-100/50 z-[60] transition-all duration-700 ease-[cubic-bezier(0.2,1,0.2,1)]
+                ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 w-[85vw] md:w-72 shadow-[30px_0_100px_rgba(0,0,0,0.06)] overflow-hidden
             `}>
-                <div className="flex flex-col h-full">
-                    {/* Logo Section */}
-                    <div className="p-8">
+                {/* Decorative Pattern for Pro App Feel */}
+                <div className="absolute top-0 right-0 w-full h-64 bg-gradient-to-br from-primary/10 via-transparent to-transparent -z-10 opacity-60"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-secondary/5 rounded-full blur-[80px] -z-10"></div>
+
+                <div className="flex flex-col h-full relative z-10">
+                    {/* mobile Close Button - Floating Design */}
+                    <button 
+                        onClick={() => setIsOpen(false)}
+                        className="md:hidden absolute top-6 right-6 w-10 h-10 rounded-full bg-white shadow-lg border border-orange-100 flex items-center justify-center text-dark active:scale-95 transition-transform"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    {/* Logo Section - Premium Centering for Mobile */}
+                    <div className="p-8 pb-10">
                         <Link href="/" className="flex items-center space-x-3 group">
                             <div className="relative">
                                 <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                <div className="relative w-10 h-10 group-hover:scale-110 transition-all duration-500 bg-slate-900 rounded-2xl flex items-center justify-center p-2 shadow-2xl">
-                                    <img src="/icon.png" alt="Logo" className="w-full h-full object-contain brightness-0 invert" />
+                                <div className="relative w-12 h-12 bg-primary rounded-[1.2rem] flex items-center justify-center p-2 shadow-xl shadow-primary/20 rotate-[-3deg] group-hover:rotate-0 transition-all duration-500">
+                                    <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M3 13.5C3 13.5 5.5 16.5 8.5 16.5C11.5 16.5 13 13.5 13 13.5C13 13.5 15.5 10.5 18.5 10.5C21.5 10.5 24 13.5 24 13.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        <circle cx="6" cy="13.5" r="2.5" fill="currentColor" opacity="0.4" />
+                                        <circle cx="18" cy="13.5" r="2.5" fill="currentColor" />
+                                    </svg>
                                 </div>
                             </div>
-                            <span className="font-heading text-2xl font-black tracking-tighter text-slate-900 group-hover:tracking-normal transition-all duration-500">Newt</span>
+                            <span className="font-heading text-2xl font-black tracking-tight text-dark">Newt<span className="text-primary italic">.</span></span>
                         </Link>
                     </div>
 
-                    {/* User Profile Section */}
-                    <div className="mx-4 mb-6 p-4 rounded-3xl bg-slate-50 border border-slate-100 group hover:bg-white hover:shadow-xl transition-all duration-500">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center font-black text-xl shadow-xl group-hover:rotate-3 transition-transform duration-500">
-                                {user?.name?.charAt(0).toUpperCase()}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="font-black text-slate-900 text-sm truncate">{user?.name}</p>
-                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{user?.role}</p>
+                    {/* Pro Profile Header - High-end Integrated Card */}
+                    <div className="px-6 mb-8">
+                        <div className="p-6 rounded-[2rem] bg-white border border-orange-100 shadow-[0_15px_40px_rgba(45,80,22,0.05)] relative overflow-hidden group">
+                             {/* Small decorative dot */}
+                            <div className="absolute top-4 right-4 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                            
+                            <div className="flex items-center space-x-4">
+                                <div className="relative">
+                                    <div className="absolute inset-0 bg-primary/10 blur-md rounded-2xl"></div>
+                                    <div className="relative w-16 h-16 bg-primary text-white rounded-[1.5rem] flex items-center justify-center font-black text-2xl shadow-lg shadow-primary/20 transform group-hover:scale-105 transition-transform duration-500">
+                                        {user?.name?.charAt(0).toUpperCase()}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 className="font-black text-dark text-lg leading-tight truncate max-w-[150px]">{user?.name}</h4>
+                                    <div className="flex items-center mt-1">
+                                        <span className="inline-block w-2 h-2 bg-primary rounded-full mr-2"></span>
+                                        <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.1em]">{user?.role}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Navigation Links */}
+                    {/* Navigation - Better Spacing and Indicators */}
                     <nav className="flex-1 px-4 overflow-y-auto custom-scrollbar">
-                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-4">Main Menu</div>
-                        <ul className="space-y-1.5">
+                        <div className="text-[10px] font-black text-primary/30 uppercase tracking-[0.25em] mb-6 ml-6">Control Center</div>
+                        <ul className="space-y-2">
                             {links.map(link => {
                                 const isActive = pathname === link.href;
                                 return (
                                     <li key={link.href}>
                                         <Link
                                             href={link.href}
-                                            className={`flex items-center space-x-3 px-4 py-3.5 rounded-2xl transition-all duration-500 group relative ${isActive
-                                                ? 'bg-slate-900 text-white shadow-2xl shadow-slate-200'
-                                                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                                            className={`flex items-center space-x-4 px-6 py-4 rounded-[1.5rem] transition-all duration-500 group relative ${isActive
+                                                ? 'bg-primary text-white shadow-xl shadow-primary/20 scale-[1.02]'
+                                                : 'text-gray-500 hover:bg-white hover:shadow-md hover:text-primary active:scale-95'
                                                 }`}
                                             onClick={() => setIsOpen(false)}
                                         >
+                                            {/* Active Marker Line */}
                                             {isActive && (
-                                                <div className="absolute left-1 w-1 h-6 bg-primary rounded-full"></div>
+                                                <div className="absolute left-2 w-1.5 h-6 bg-white/30 rounded-full"></div>
                                             )}
-                                            <svg className={`w-5 h-5 transition-transform duration-500 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={isActive ? 2.5 : 2} d={link.icon} />
-                                            </svg>
+                                            
+                                            <div className={`p-2 rounded-xl transition-colors duration-500 ${isActive ? 'bg-white/10' : 'bg-primary/5 group-hover:bg-primary/10'}`}>
+                                                <svg className={`w-5 h-5 transition-transform duration-500 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={isActive ? 2.5 : 2} d={link.icon} />
+                                                </svg>
+                                            </div>
+                                            
                                             <span className="font-bold text-sm tracking-tight">{link.label}</span>
+                                            
+                                            {/* Minimal Arrow for non-active items */}
+                                            {!isActive && (
+                                                <svg className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            )}
                                         </Link>
                                     </li>
                                 );
@@ -108,26 +150,20 @@ export default function DashboardSidebar({ role, isOpen, setIsOpen }) {
                         </ul>
                     </nav>
 
-                    {/* Bottom Section */}
-                    <div className="p-4 mt-auto space-y-3">
-                        {/* Language Selector In-line */}
-                        <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Language</span>
-                            <div className="flex gap-1 p-0.5 bg-slate-200/50 rounded-xl">
-                                <button className="px-2.5 py-1 bg-white text-slate-900 rounded-lg text-[8px] font-black shadow-sm">EN</button>
-                                <button className="px-2.5 py-1 text-slate-400 hover:text-slate-600 rounded-lg text-[8px] font-black transition-colors" onClick={() => alert('Hindi coming soon!')}>HI</button>
-                            </div>
-                        </div>
-
-                        {/* Logout Button - Minimal */}
+                    {/* Logout Section - Minimalist & Secure Look */}
+                    <div className="p-6 mb-2">
                         <button
                             onClick={handleLogout}
-                            className="w-full flex items-center justify-between px-5 py-3.5 rounded-2xl bg-white border border-slate-100 hover:bg-red-50 hover:border-red-100 hover:text-red-600 transition-all duration-500 group"
+                            className="w-full flex items-center justify-between px-6 py-5 rounded-[2rem] bg-white border border-orange-100/50 hover:bg-red-50 hover:border-red-100 hover:text-red-600 transition-all duration-500 group shadow-sm active:scale-95"
                         >
-                            <span className="font-black text-[10px] uppercase tracking-[0.15em] transition-transform duration-500 group-hover:translate-x-1">Logout System</span>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
+                            <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 rounded-xl bg-red-50 flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-colors duration-500">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                    </svg>
+                                </div>
+                                <span className="font-black text-[10px] uppercase tracking-[0.2em] opacity-60">Terminate Session</span>
+                            </div>
                         </button>
                     </div>
                 </div>

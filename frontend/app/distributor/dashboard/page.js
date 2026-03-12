@@ -99,32 +99,32 @@ export default function DistributorDashboard() {
 
     return (
         <DashboardLayout role="distributor">
-            <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-transparent py-4 md:py-8 px-0">
                 <div className="max-w-7xl mx-auto">
                     {/* Hackathon Connectivity & Trust Indicator */}
-                    <div className="flex flex-wrap items-center gap-4 mb-6 animate-fadeIn">
-                        <div className="bg-green-50 text-green-700 px-4 py-2 rounded-full flex items-center space-x-2 text-sm font-bold border border-green-200">
+                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-8 animate-fadeIn">
+                        <div className="bg-green-50 text-green-700 px-5 py-2.5 rounded-full flex items-center space-x-2 text-xs font-black border border-green-200 shadow-sm">
                             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            <span>Connected: Rural Optimized</span>
+                            <span className="uppercase tracking-wider">Connected: Rural Optimized</span>
                         </div>
-                        <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-full flex items-center space-x-2 text-sm font-bold border border-blue-200">
+                        <div className="bg-blue-50 text-blue-700 px-5 py-2.5 rounded-full flex items-center space-x-2 text-xs font-black border border-blue-200 shadow-sm">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                             </svg>
-                            <span>GPS Verification Active</span>
+                            <span className="uppercase tracking-wider">GPS Verification Active</span>
                         </div>
                     </div>
 
                     {/* Header - Premium Header */}
-                    <div className="mb-6 md:mb-10 animate-fadeIn relative">
-                        <div className="flex items-center gap-2 text-primary opacity-60 mb-2">
-                            <span className="w-6 md:w-8 h-[2px] bg-current rounded-full"></span>
-                            <span className="text-[10px] font-black uppercase tracking-widest">Personal Performance Portal</span>
+                    <div className="mb-8 md:mb-12 animate-fadeIn relative text-center md:text-left">
+                        <div className="flex items-center justify-center md:justify-start gap-2 text-primary/60 mb-2">
+                            <span className="hidden md:block w-8 h-[2px] bg-current rounded-full"></span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Personal Performance Portal</span>
                         </div>
-                        <h1 className="font-heading text-3xl md:text-6xl font-black text-slate-900 mb-2 tracking-tighter leading-none">
-                            Hello, {user?.name.split(' ')[0]}! 👋
+                        <h1 className="font-heading text-4xl md:text-7xl font-bold text-dark mb-3 tracking-tighter leading-tight md:leading-none">
+                            Hello, <span className="gradient-text">{user?.name.split(' ')[0]}!</span> 👋
                         </h1>
-                        <p className="text-slate-500 text-xs md:text-xl font-medium max-w-2xl leading-relaxed">
+                        <p className="text-slate-500 text-sm md:text-xl font-medium max-w-2xl mx-auto md:mx-0 leading-relaxed">
                             Track your impact, log meetings, and grow in real-time.
                         </p>
                     </div>
@@ -228,7 +228,7 @@ export default function DistributorDashboard() {
                         <>
                             {/* Weekly Chart */}
                             <div className="card-premium mb-8 overflow-hidden">
-                                <h3 className="font-heading text-xl md:text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                                <h3 className="font-heading text-xl md:text-2xl font-bold text-dark mb-6 flex items-center gap-3">
                                     Weekly Performance
                                     <span className="text-[10px] md:text-xs font-black uppercase tracking-widest bg-slate-100 text-slate-500 px-3 py-1 rounded-full">Live Stats</span>
                                 </h3>
@@ -238,7 +238,7 @@ export default function DistributorDashboard() {
                             {/* Recent Activities */}
                             <div className="card-premium">
                                 <div className="flex items-center justify-between mb-6 md:mb-8">
-                                    <h3 className="font-heading text-xl md:text-2xl font-bold text-slate-900">
+                                    <h3 className="font-heading text-xl md:text-2xl font-bold text-dark">
                                         Recent Activity
                                     </h3>
                                     <button onClick={() => router.push('/distributor/meetings')} className="text-[10px] md:text-xs font-black uppercase tracking-widest text-primary hover:opacity-70 transition-opacity">
@@ -261,7 +261,7 @@ export default function DistributorDashboard() {
                                                         <span className="font-black text-lg md:text-xl">{activity.type === 'meeting' ? 'M' : activity.type === 'sale' ? 'S' : 'P'}</span>
                                                     </div>
                                                     <div>
-                                                        <p className="font-black text-slate-900 text-base md:text-xl mb-0.5 md:mb-1">{activity.description}</p>
+                                                        <p className="font-bold text-dark text-base md:text-xl mb-0.5 md:mb-1">{activity.description}</p>
                                                         <div className="flex items-center gap-2">
                                                             <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
                                                             <p className="text-[10px] md:text-xs text-slate-500 font-bold uppercase tracking-widest truncate max-w-[150px] md:max-w-none">{activity.location}</p>
@@ -269,7 +269,7 @@ export default function DistributorDashboard() {
                                                     </div>
                                                 </div>
                                                 <div className="text-right flex-shrink-0">
-                                                    <p className="font-black text-slate-900 text-sm md:text-base mb-0.5">
+                                                    <p className="font-bold text-dark text-sm md:text-base mb-0.5">
                                                         {new Date(activity.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </p>
                                                     <p className="text-[9px] md:text-[10px] text-slate-400 font-black uppercase tracking-tighter">

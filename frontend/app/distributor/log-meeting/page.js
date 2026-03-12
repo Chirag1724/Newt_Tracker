@@ -6,6 +6,7 @@ import api from '@/lib/api';
 import MapPicker from '@/components/MapPicker';
 import PhotoUpload from '@/components/PhotoUpload';
 import DashboardLayout from '@/components/DashboardLayout';
+import DocumentUpload from '@/components/DocumentUpload';
 import { toast } from '@/lib/toastUtils';
 import { ButtonLoader } from '@/components/LoadingSkeletons';
 
@@ -26,6 +27,7 @@ export default function LogMeetingPage() {
         longitude: null,
         location_address: '',
         photos: [],
+        documents: [],
         notes: ''
     });
 
@@ -46,6 +48,10 @@ export default function LogMeetingPage() {
 
     const handlePhotosChange = (photos) => {
         setFormData(prev => ({ ...prev, photos }));
+    };
+
+    const handleDocumentsChange = (documents) => {
+        setFormData(prev => ({ ...prev, documents }));
     };
 
     const validate = () => {
@@ -106,7 +112,7 @@ export default function LogMeetingPage() {
 
     return (
         <DashboardLayout role="distributor">
-            <div className="min-h-screen bg-background py-12 px-6">
+            <div className="min-h-screen bg-transparent py-4 md:py-8 px-0">
                 <div className="max-w-4xl mx-auto">
                     <div className="mb-8">
                         <button
@@ -249,6 +255,15 @@ export default function LogMeetingPage() {
                         <div className="space-y-6">
                             <label className="block text-sm font-bold text-dark uppercase tracking-wider">Photo Proofs</label>
                             <PhotoUpload onPhotosChange={handlePhotosChange} maxPhotos={5} />
+                        </div>
+
+                        <div className="space-y-6">
+                            <label className="block text-sm font-bold text-dark uppercase tracking-wider">Supporting Documents</label>
+                            <DocumentUpload
+                                onDocumentsChange={handleDocumentsChange}
+                                maxDocuments={5}
+                                label="Attach documents (price lists, agreements, product sheets)"
+                            />
                         </div>
 
                         <div>

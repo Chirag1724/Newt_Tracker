@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS meetings (
     longitude DECIMAL(11, 8),
     location_address TEXT,
     photos JSONB DEFAULT '[]', -- Array of image URLs
+    documents JSONB DEFAULT '[]', -- Array of document objects {url, name, size, type}
     notes TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

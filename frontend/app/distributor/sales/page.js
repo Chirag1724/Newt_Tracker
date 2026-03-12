@@ -144,8 +144,8 @@ export default function MySalesPage() {
 
     return (
         <DashboardLayout role="distributor">
-            <div className="min-h-screen bg-background py-12 px-6">
-                <div className="max-w-7xl mx-auto">
+            <div className="min-h-screen bg-transparent py-4 md:py-8 px-0">
+                <div className="max-w-7xl mx-auto px-0 md:px-2">
                     {/* Header with Export */}
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                         <div>

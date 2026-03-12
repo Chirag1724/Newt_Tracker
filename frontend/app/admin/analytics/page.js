@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, memo } from 'react';
 import api from '@/lib/api';
+
 import DashboardLayout from '@/components/DashboardLayout';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,

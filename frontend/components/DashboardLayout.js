@@ -10,18 +10,15 @@ export default function DashboardLayout({ children, role }) {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        // Check authentication
-        if (!isAuthenticated()) {
-            router.push('/login');
-            return;
-        }
-
+        setMounted(true);
+        // Sync check on mount
+        const authenticated = isAuthenticated();
         const currentUser = getCurrentUser();
 
-        // Check role permission
-        if (!currentUser || currentUser.role !== role) {
+        if (!authenticated || !currentUser || currentUser.role !== role) {
             router.push('/login');
             return;
         }
@@ -29,47 +26,61 @@ export default function DashboardLayout({ children, role }) {
         setLoading(false);
     }, [router, role]);
 
-    if (loading) {
-        return (
-            <div className="flex min-h-screen bg-background">
-                {/* Sidebar Skeleton (Immediate render to prevent CLS) */}
-                <div className="hidden md:block w-72 h-screen border-r border-gray-100 bg-white p-6">
-                    <div className="w-32 h-8 bg-gray-100 rounded-xl mb-12 animate-pulse"></div>
-                    <div className="space-y-4">
-                        {[1, 2, 3, 4, 5, 6].map(i => (
-                            <div key={i} className="w-full h-12 bg-gray-50 rounded-xl animate-pulse"></div>
-                        ))}
-                    </div>
-                </div>
-                {/* Main Content Skeleton */}
-                <main className="flex-1 p-4 md:p-8">
-                    <div className="max-w-7xl mx-auto text-center py-20">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                        <p className="text-gray-400 font-medium">Securing session...</p>
-                    </div>
-                </main>
-            </div>
-        );
-    }
-
     return (
-        <div className="flex min-h-screen bg-[#F8FAFC] pb-24 md:pb-0">
-            <DashboardSidebar
-                role={role}
-                isOpen={isSidebarOpen}
-                setIsOpen={setIsSidebarOpen}
+        <div className="flex min-h-screen bg-background pb-24 md:pb-0 relative">
+            {/* Background Decorative Effects - Constant position in DOM tree */}
+            <div className="fixed inset-0 pointer-events-none -z-10" 
+                style={{
+                    background: `
+                        radial-gradient(circle at top right, rgba(45, 80, 22, 0.05) 0%, transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(255, 140, 66, 0.03) 0%, transparent 35%)
+                    `
+                }}
             />
-            <main className="flex-1 md:ml-72 transition-all duration-500">
-                <div className="p-4 md:p-10">
-                    <div className="max-w-7xl mx-auto space-y-8">
-                        {children}
-                    </div>
-                </div>
-            </main>
-            <MobileBottomNav
-                role={role}
-                onMenuClick={() => setIsSidebarOpen(true)}
-            />
+
+            {loading ? (
+                <>
+                    {/* Sidebar Skeleton (Matching aside tag) */}
+                    <aside className="hidden md:block fixed left-0 top-0 h-screen w-72 border-r border-gray-100 bg-white p-6 z-[60]">
+                        <div className="w-32 h-8 bg-gray-100 rounded-xl mb-12 animate-pulse"></div>
+                        <div className="space-y-4">
+                            {[1, 2, 3, 4, 5, 6].map(i => (
+                                <div key={i} className="w-full h-12 bg-gray-50 rounded-xl animate-pulse"></div>
+                            ))}
+                        </div>
+                    </aside>
+                    
+                    {/* Main Content Skeleton (Matching main tag and margins) */}
+                    <main className="flex-1 md:ml-72 transition-all duration-500">
+                        <div className="py-4 md:py-10 px-2 md:px-4">
+                            <div className="max-w-7xl mx-auto text-center py-20">
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                                <p className="text-gray-400 font-medium">Securing session...</p>
+                            </div>
+                        </div>
+                    </main>
+                    <div className="md:hidden" /> {/* Spacer for MobileBottomNav position */}
+                </>
+            ) : (
+                <>
+                    <DashboardSidebar
+                        role={role}
+                        isOpen={isSidebarOpen}
+                        setIsOpen={setIsSidebarOpen}
+                    />
+                    <main className="flex-1 md:ml-72 transition-all duration-500">
+                        <div className="py-4 md:py-10 px-2 md:px-4">
+                            <div className="max-w-7xl mx-auto space-y-8">
+                                {children}
+                            </div>
+                        </div>
+                    </main>
+                    <MobileBottomNav
+                        role={role}
+                        onMenuClick={() => setIsSidebarOpen(true)}
+                    />
+                </>
+            )}
         </div>
     );
 }

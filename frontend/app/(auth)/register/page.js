@@ -62,6 +62,14 @@ export default function RegisterPage() {
                 <div className="card animate-fadeIn">
                     {/* Header */}
                     <div className="text-center mb-8">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-3xl mb-6 shadow-xl shadow-primary/20 animate-float">
+                            <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 13.5C3 13.5 5.5 16.5 8.5 16.5C11.5 16.5 13 13.5 13 13.5C13 13.5 15.5 10.5 18.5 10.5C21.5 10.5 24 13.5 24 13.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <circle cx="6" cy="13.5" r="2.5" fill="currentColor" opacity="0.4" />
+                                <circle cx="18" cy="13.5" r="2.5" fill="currentColor" />
+                                <path d="M12 2L12 22" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" />
+                            </svg>
+                        </div>
                         <h2 className="font-heading text-4xl font-bold text-dark mb-2">
                             Create Account
                         </h2>

@@ -2,24 +2,40 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function Footer() {
     const pathname = usePathname();
+    const [mounted, setMounted] = useState(false);
     const isDashboard = pathname.startsWith('/admin') || pathname.startsWith('/distributor') || pathname.startsWith('/profile');
 
-    if (isDashboard) return null;
+    const isAuthPage = pathname === '/login' || pathname === '/register';
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Prevent hydration mismatch
+    if (!mounted) return null;
+
+    // Hide footer on dashboard and auth pages
+    if (isDashboard || isAuthPage) return null;
 
     return (
         <footer className="bg-dark text-white py-16">
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
                 <div className="md:col-span-2">
-                    <div className="flex items-center space-x-3 mb-6 group">
-                        <div className="bg-primary text-white p-2 rounded-xl group-hover:scale-110 transition-smooth shadow-lg shadow-primary/20">
-                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                    <div className="flex items-center gap-3 mb-8 group">
+                        <div className="w-11 h-11 bg-primary rounded-2xl flex items-center justify-center group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-primary/20">
+                            {/* Professional SVG Logo Icon */}
+                            <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 13.5C3 13.5 5.5 16.5 8.5 16.5C11.5 16.5 13 13.5 13 13.5C13 13.5 15.5 10.5 18.5 10.5C21.5 10.5 24 13.5 24 13.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <circle cx="6" cy="13.5" r="2.5" fill="currentColor" opacity="0.4" />
+                                <circle cx="18" cy="13.5" r="2.5" fill="currentColor" />
+                                <path d="M12 2L12 22" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" />
                             </svg>
                         </div>
-                        <span className="font-heading text-2xl font-bold tracking-tight text-white">Newt Tracker</span>
+                        <span className="font-heading text-2xl font-bold tracking-tighter text-white">Newt Tracker</span>
                     </div>
                     <p className="text-gray-400 max-w-sm">
                         Empowering field operations with intelligent tracking, real-time analytics, and seamless team management solutions. Built for the future of field work.
@@ -28,9 +44,9 @@ export default function Footer() {
                 <div>
                     <h4 className="font-bold mb-4 uppercase text-xs tracking-widest text-gray-500">Product</h4>
                     <ul className="space-y-2 text-gray-400">
-                        <li><Link href="#features" className="hover:text-primary transition-smooth">Features</Link></li>
-                        <li><Link href="#how-it-works" className="hover:text-primary transition-smooth">How it Works</Link></li>
-                        <li><Link href="/pricing" className="hover:text-primary transition-smooth">Pricing</Link></li>
+                        <li><Link href="/#features" className="hover:text-primary transition-smooth">Features</Link></li>
+                        <li><Link href="/#how-it-works" className="hover:text-primary transition-smooth">How it Works</Link></li>
+                        <li><Link href="/#stats" className="hover:text-primary transition-smooth">Impact</Link></li>
                     </ul>
                 </div>
                 <div>
@@ -43,7 +59,7 @@ export default function Footer() {
             </div>
             <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                 <p className="text-gray-500 text-sm">
-                    © {new Date().getFullYear()} Newt Tracker. All rights reserved.
+                    © {mounted ? new Date().getFullYear() : ''} Newt Tracker. All rights reserved.
                 </p>
                 <div className="flex space-x-6">
                     <a href="#" className="text-gray-500 hover:text-white transition-smooth">

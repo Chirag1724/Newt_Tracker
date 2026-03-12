@@ -165,6 +165,69 @@ export default function MeetingDetailModal({ meeting, onClose }) {
                                     </div>
                                 )}
                             </section>
+
+                            {/* Documents */}
+                            {(() => {
+                                const FILE_ICONS = {
+                                    pdf: { emoji: '📄', color: 'text-red-500', bg: 'bg-red-50', border: 'border-red-200' },
+                                    doc: { emoji: '📝', color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-200' },
+                                    docx: { emoji: '📝', color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-200' },
+                                    xls: { emoji: '📊', color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-200' },
+                                    xlsx: { emoji: '📊', color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-200' },
+                                    csv: { emoji: '📋', color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-200' },
+                                    txt: { emoji: '📃', color: 'text-gray-500', bg: 'bg-gray-50', border: 'border-gray-200' },
+                                };
+                                const getExt = (name) => (name || '').split('.').pop().toLowerCase();
+                                const getIcon = (name) => FILE_ICONS[getExt(name)] ?? FILE_ICONS.txt;
+                                const formatBytes = (b) => {
+                                    if (!b) return '';
+                                    const k = 1024, sizes = ['B', 'KB', 'MB'];
+                                    const i = Math.floor(Math.log(b) / Math.log(k));
+                                    return `${parseFloat((b / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+                                };
+                                const docs = meeting.documents || [];
+                                return (
+                                    <section>
+                                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+                                            Documents ({docs.length})
+                                        </h3>
+                                        {docs.length > 0 ? (
+                                            <div className="space-y-2">
+                                                {docs.map((doc, idx) => {
+                                                    const icon = getIcon(doc.name);
+                                                    return (
+                                                        <a
+                                                            key={idx}
+                                                            href={doc.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className={`flex items-center gap-3 p-3 rounded-xl border ${icon.border} ${icon.bg} hover:shadow-md transition-all group`}
+                                                        >
+                                                            <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-xl flex-shrink-0">
+                                                                {icon.emoji}
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className={`text-sm font-semibold ${icon.color} truncate`}>{doc.name}</p>
+                                                                {doc.size > 0 && (
+                                                                    <p className="text-xs text-gray-400">{formatBytes(doc.size)} · {getExt(doc.name).toUpperCase()}</p>
+                                                                )}
+                                                            </div>
+                                                            <svg className="w-4 h-4 text-gray-400 group-hover:text-primary flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                            </svg>
+                                                        </a>
+                                                    );
+                                                })}
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                                                <span className="text-3xl mb-2">📁</span>
+                                                <p className="text-gray-400 text-sm font-medium text-center">No documents attached.</p>
+                                            </div>
+                                        )}
+                                    </section>
+                                );
+                            })()}
                         </div>
                     </div>
                 </div>

@@ -4,11 +4,12 @@ const nextConfig = {
     output: 'standalone',
     // Compress images and optimize
     images: {
-        domains: ['res.cloudinary.com'],
+        domains: ['res.cloudinary.com', 'images.unsplash.com', 'images.pexels.com'],
     },
-    // Enable React strict mode for better error detection
     reactStrictMode: true,
-    // Experimental features for better performance
+    swcMinify: true,
+    poweredByHeader: false,
+    compress: true,
     experimental: {
         serverActions: {
             allowedOrigins: ['localhost:3001', 'newt-tracker-vercel.app']

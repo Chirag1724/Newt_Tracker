@@ -23,37 +23,37 @@ export default function MobileBottomNav({ role, onMenuClick }) {
     const links = role === 'admin' ? adminLinks : distributorLinks;
 
     return (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-4 pb-6 pt-2">
-            <div className="glass-premium rounded-[2.5rem] p-2 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white/40">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-6 pb-8 pt-2 pointer-events-none">
+            <div className="glass-premium rounded-[2.5rem] p-2 flex items-center justify-around shadow-[0_20px_60px_rgba(0,0,0,0.2)] border border-white/50 pointer-events-auto backdrop-blur-xl">
                 {links.map((link) => {
                     const isActive = pathname === link.href;
                     return (
                         <Link
                             key={link.href}
                             href={link.href}
-                            className={`relative flex flex-col items-center justify-center py-2 px-3 transition-all duration-500 rounded-3xl ${isActive
-                                ? 'text-primary scale-110'
-                                : 'text-slate-400 hover:text-slate-600'
+                            className={`relative flex flex-col items-center justify-center py-2 px-4 transition-all duration-500 rounded-3xl ${isActive
+                                ? 'text-primary'
+                                : 'text-gray-400'
                                 }`}
                         >
-                            {/* Active Indicator Glow */}
+                            {/* Active Indicator Background */}
                             {isActive && (
-                                <div className="absolute inset-0 bg-primary/5 rounded-3xl animate-pulse"></div>
+                                <div className="absolute inset-0 bg-primary/5 rounded-2xl"></div>
                             )}
 
-                            <div className={`relative z-10 transition-transform duration-500 ${isActive ? 'translate-y-[-2px]' : ''}`}>
+                            <div className={`relative z-10 transition-all duration-500 ${isActive ? 'scale-110 -translate-y-1' : 'group-hover:scale-110'}`}>
                                 <svg className={`w-6 h-6 transition-all duration-500 ${isActive ? 'stroke-[2.5px]' : 'stroke-2'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" d={link.icon} />
                                 </svg>
                             </div>
 
-                            <span className={`text-[9px] font-black mt-1 uppercase tracking-widest transition-all duration-500 ${isActive ? 'opacity-100' : 'opacity-0 scale-75'}`}>
+                            <span className={`text-[8px] font-black mt-1 uppercase tracking-[0.15em] transition-all duration-500 ${isActive ? 'opacity-100' : 'opacity-0 h-0 hidden'}`}>
                                 {link.label}
                             </span>
 
                             {/* Active Dot indicator */}
                             {isActive && (
-                                <div className="absolute -bottom-1 w-1 h-1 bg-primary rounded-full shadow-[0_0_10px_#2D5016]"></div>
+                                <div className="absolute -bottom-1 w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_12px_rgba(45,80,22,0.8)] animate-pulse"></div>
                             )}
                         </Link>
                     );
@@ -62,14 +62,15 @@ export default function MobileBottomNav({ role, onMenuClick }) {
                 {/* More Menu Button */}
                 <button
                     onClick={onMenuClick}
-                    className="relative flex flex-col items-center justify-center py-2 px-3 text-slate-400 hover:text-slate-600 transition-all duration-500 rounded-3xl"
+                    className="relative flex flex-col items-center justify-center py-2 px-4 text-gray-400 hover:text-primary transition-all duration-500 rounded-3xl group"
                 >
-                    <div className="relative z-10">
-                        <svg className="w-6 h-6 stroke-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
+                    <div className="relative z-10 group-active:scale-90 transition-transform">
+                        <div className="w-10 h-10 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                            <svg className="w-6 h-6 stroke-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </div>
                     </div>
-                    <span className="text-[9px] font-black mt-1 uppercase tracking-widest">More</span>
                 </button>
             </div>
         </nav>

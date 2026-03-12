@@ -60,7 +60,7 @@ export default function DistributeSamplePage() {
 
     return (
         <DashboardLayout role="distributor">
-            <div className="min-h-screen bg-background py-12 px-6">
+            <div className="min-h-screen bg-transparent py-4 md:py-8 px-0">
                 <div className="max-w-4xl mx-auto">
                     <div className="mb-8">
                         <button

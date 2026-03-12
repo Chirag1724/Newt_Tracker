@@ -19,6 +19,7 @@ const createMeeting = async (req, res) => {
             longitude,
             location_address,
             photos,
+            documents,
             notes
         } = req.body;
 
@@ -52,13 +53,16 @@ const createMeeting = async (req, res) => {
             `INSERT INTO meetings (
                 user_id, meeting_type, person_name, category, contact_number,
                 business_potential, village_name, attendee_count, meeting_topic,
-                latitude, longitude, location_address, photos, notes
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                latitude, longitude, location_address, photos, documents, notes
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
             RETURNING *`,
             [
                 user_id, meeting_type, person_name, category, contact_number,
                 business_potential, village_name, attendee_count, meeting_topic,
-                latitude, longitude, location_address, JSON.stringify(photos || []), notes
+                latitude, longitude, location_address,
+                JSON.stringify(photos || []),
+                JSON.stringify(documents || []),
+                notes
             ]
         );
 
@@ -234,6 +238,7 @@ const updateMeeting = async (req, res) => {
             longitude,
             location_address,
             photos,
+            documents,
             notes
         } = req.body;
 
@@ -263,14 +268,17 @@ const updateMeeting = async (req, res) => {
                 longitude = COALESCE($9, longitude),
                 location_address = COALESCE($10, location_address),
                 photos = COALESCE($11, photos),
-                notes = COALESCE($12, notes)
-            WHERE id = $13
+                documents = COALESCE($12, documents),
+                notes = COALESCE($13, notes)
+            WHERE id = $14
             RETURNING *`,
             [
                 person_name, category, contact_number, business_potential,
                 village_name, attendee_count, meeting_topic,
                 latitude, longitude, location_address,
-                photos ? JSON.stringify(photos) : null, notes, id
+                photos ? JSON.stringify(photos) : null,
+                documents ? JSON.stringify(documents) : null,
+                notes, id
             ]
         );
 

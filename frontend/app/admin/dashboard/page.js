@@ -16,7 +16,7 @@ import React, { memo } from 'react';
 // Memoized Charts for performance
 const SalesTrendChart = memo(({ data }) => (
     <div className="card-premium h-[320px] md:h-auto overflow-hidden">
-        <h3 className="font-heading text-lg md:text-2xl font-bold text-slate-900 mb-2 md:mb-6">
+        <h3 className="font-heading text-lg md:text-2xl font-bold text-dark mb-2 md:mb-6">
             Sales Trend
         </h3>
         <div className="h-[200px] md:h-[300px]">
@@ -43,7 +43,7 @@ const SalesTrendChart = memo(({ data }) => (
 
 const RevenuePieChart = memo(({ data }) => (
     <div className="card-premium h-[320px] md:h-auto overflow-hidden">
-        <h3 className="font-heading text-lg md:text-2xl font-bold text-slate-900 mb-2 md:mb-6">
+        <h3 className="font-heading text-lg md:text-2xl font-bold text-dark mb-2 md:mb-6">
             Revenue Source
         </h3>
         <div className="h-[200px] md:h-[300px]">
@@ -75,7 +75,7 @@ const RevenuePieChart = memo(({ data }) => (
 
 const MeetingsTrendChart = memo(({ data }) => (
     <div className="card-premium h-[320px] md:h-auto overflow-hidden">
-        <h3 className="font-heading text-lg md:text-2xl font-bold text-slate-900 mb-2 md:mb-6">
+        <h3 className="font-heading text-lg md:text-2xl font-bold text-dark mb-2 md:mb-6">
             Activity Trend
         </h3>
         <div className="h-[200px] md:h-[300px]">
@@ -161,7 +161,7 @@ export default function AdminDashboard() {
 
     return (
         <DashboardLayout role="admin">
-            <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-transparent py-4 md:py-8 px-0">
                 <div className="max-w-7xl mx-auto">
                     {/* Header - Premium Header */}
                     <div className="mb-6 md:mb-10 animate-fadeIn">
@@ -169,8 +169,8 @@ export default function AdminDashboard() {
                             <span className="w-6 md:w-8 h-[2px] bg-current rounded-full"></span>
                             <span className="text-[10px] font-black uppercase tracking-widest">Admin Control Center</span>
                         </div>
-                        <h1 className="font-heading text-3xl md:text-6xl font-black text-slate-900 mb-2 tracking-tighter leading-none">
-                            Welcome, {user?.name.split(' ')[0]}! 👋
+                        <h1 className="font-heading text-4xl md:text-7xl font-bold text-dark mb-2 tracking-tighter leading-none">
+                            Welcome, <span className="gradient-text">{user?.name.split(' ')[0]}!</span> 👋
                         </h1>
                         <p className="text-slate-500 text-xs md:text-xl font-medium max-w-2xl leading-relaxed">
                             A real-time snapshot of your entire operations.
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
                                 {/* Top Performers - Premium List */}
                                 <div className="card-premium">
                                     <div className="flex items-center justify-between mb-6 md:mb-8">
-                                        <h3 className="font-heading text-xl md:text-2xl font-bold text-slate-900">Top Performers</h3>
+                                        <h3 className="font-heading text-xl md:text-2xl font-bold text-dark">Top Performers</h3>
                                         <div className="w-8 h-8 md:w-10 md:h-10 bg-yellow-50 rounded-full flex items-center justify-center text-yellow-600">
                                             <svg className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 20 20">
                                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -256,7 +256,7 @@ export default function AdminDashboard() {
                                                         {index + 1}
                                                     </div>
                                                     <div className="min-w-0">
-                                                        <p className="font-black text-slate-900 text-xs md:text-sm truncate">{performer.name}</p>
+                                                        <p className="font-bold text-dark text-xs md:text-sm truncate">{performer.name}</p>
                                                         <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-wider">{performer.state}</p>
                                                     </div>
                                                 </div>
@@ -272,7 +272,7 @@ export default function AdminDashboard() {
 
                             {/* State Stats Table - Responsive Container */}
                             <div className="card-premium overflow-hidden">
-                                <h3 className="font-heading text-2xl font-bold text-slate-900 mb-8 px-2">Regional Performance Breakdown</h3>
+                                <h3 className="font-heading text-2xl font-bold text-dark mb-8 px-2">Regional Performance Breakdown</h3>
                                 <div className="overflow-x-auto -mx-2">
                                     <table className="w-full text-left border-separate border-spacing-y-2">
                                         <thead>
@@ -286,7 +286,7 @@ export default function AdminDashboard() {
                                         <tbody>
                                             {dashboardData.state_stats && dashboardData.state_stats.map(state => (
                                                 <tr key={state.state} className="group hover:bg-slate-50/80 transition-all">
-                                                    <td className="py-4 px-6 rounded-l-3xl bg-slate-50/50 group-hover:bg-transparent font-black text-slate-900">{state.state}</td>
+                                                    <td className="py-4 px-6 rounded-l-3xl bg-slate-50/50 group-hover:bg-transparent font-bold text-dark">{state.state}</td>
                                                     <td className="py-4 px-6 text-center bg-slate-50/50 group-hover:bg-transparent text-slate-600 font-bold">{state.distributors}</td>
                                                     <td className="py-4 px-6 text-center bg-slate-50/50 group-hover:bg-transparent text-slate-600 font-bold">{state.meetings}</td>
                                                     <td className="py-4 px-6 rounded-r-3xl bg-slate-50/50 group-hover:bg-transparent text-right font-black text-primary tracking-tight">

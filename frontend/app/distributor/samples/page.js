@@ -107,8 +107,8 @@ export default function MySamplesPage() {
 
     return (
         <DashboardLayout role="distributor">
-            <div className="min-h-screen bg-background py-12">
-                <div className="max-w-7xl mx-auto px-6">
+            <div className="min-h-screen bg-transparent py-4 md:py-8 px-0">
+                <div className="max-w-7xl mx-auto px-0">
                     {/* Header */}
                     <div className="flex justify-between items-center mb-8">
                         <div>

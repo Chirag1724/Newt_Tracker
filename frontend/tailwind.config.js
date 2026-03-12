@@ -15,8 +15,8 @@ module.exports = {
                 dark: '#1A1A1A',         // Dark Text
             },
             fontFamily: {
-                heading: ['Fraunces', 'serif'],
-                body: ['Public Sans', 'sans-serif'],
+                heading: ['var(--font-fraunces)', 'serif'],
+                body: ['var(--font-public-sans)', 'sans-serif'],
             },
         },
     },
